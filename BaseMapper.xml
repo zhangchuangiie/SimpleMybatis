@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.BaseMapper" >
+
+    <select id="select"  resultType="java.util.LinkedHashMap">
+        ${sql}
+    </select>
+
+    <select id="count"  resultType="java.lang.Long">
+        ${sql}
+    </select>
+
+    <select id="get"  resultType="java.util.LinkedHashMap">
+        ${sql}
+    </select>
+
+    <insert id="insert">
+        ${sql}
+    </insert>
+
+    <update id="executeBatch" parameterType="List">
+        <foreach collection="sql" index="index" item="item">
+            ${item};
+        </foreach>
+    </update>
+
+    <update id="update">
+        ${sql}
+    </update>
+
+    <delete id="delete">
+        ${sql}
+    </delete>
+
+    <delete id="execute">
+        ${sql}
+    </delete>
+</mapper>
