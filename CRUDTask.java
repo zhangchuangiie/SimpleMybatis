@@ -1,8 +1,10 @@
 package com.example.demo.trigger.schedule;
 
 
+import com.example.demo.mapper.BaseDAO;
 import com.example.demo.mapper.BaseMapper;
 import com.example.demo.trigger.filter.ApiAccessFilter;
+import com.example.demo.util.ParamUtil;
 import com.example.demo.util.TimeUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -44,6 +46,8 @@ public class CRUDTask {
 
             int result = 0 ;
 
+/*
+            //直接使用baseMapper
             result = baseMapper.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(#{args[0]},#{args[1]},#{args[2]},#{args[3]})",name,password,number,currentDateString);
 
@@ -56,8 +60,27 @@ public class CRUDTask {
             List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=#{args[0]} and password=#{args[1]} and number=#{args[2]}  ORDER BY #{args[3]} asc LIMIT 2,2",name,password,number,"time");
 
             long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=#{args[0]} and password=#{args[1]} and number=#{args[2]}",name,password,number);
+*/
 
 
+            //使用BaseDAO
+            result = BaseDAO.insert("INSERT INTO user(name,password,number,time) " +
+                    " VALUES(?,?,?,?)",name,password,number,currentDateString);
+
+            result = BaseDAO.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
+
+            result = BaseDAO.delete("delete from user where id=?",id);
+
+            LinkedHashMap<String, Object> resultObject =  BaseDAO.get("SELECT  * FROM user where  id=?",id1);
+
+            List<LinkedHashMap<String, Object>> resultList =  BaseDAO.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 2,2",name,password,number,"time");
+
+            long resultCount =  BaseDAO.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
+
+
+
+//            result = baseMapper.insert(ParamUtil.paramReplace("INSERT INTO user(name,password,number,time) " +
+//                    " VALUES(?,?,?,?)"),name,password,number,currentDateString);
 //
 //            List<String> sql = new ArrayList<String>();
 //            for (int i = 0; i < 1000; i++) {
