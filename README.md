@@ -10,4 +10,5 @@
 6. 可以直接使用BaseMapper，也可以使用进一步封装的BaseDAO，这个在BaseMapper的基础上做了参数加工和结果集加工（支持?占位符、时间格式化）
 7. 在CRUDTask文件中可以查看调用示例
 
-
+## 联系人：
+有问题可以联系:zhangchuang@iie.ac.cn
