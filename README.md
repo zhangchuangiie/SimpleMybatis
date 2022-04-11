@@ -7,8 +7,12 @@
 3. 将controller、entity、mapper、service、resources简化为只要在controller接口里面直接写逻辑，每一组接口只要写一个java文件
 4. 对DDL，DCL也很好的支持，适合大量动态建表的业务
 5. BaseMapper将数据库操作抽象为8种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作（call后续会加入）
-6. 可以直接使用BaseMapper，也可以使用进一步封装的BaseDAO，这个在BaseMapper的基础上做了参数加工和结果集加工（支持?占位符、时间格式化）
+6. 可以直接使用BaseMapper，也可以使用进一步封装的BaseDAO（相当于BaseMapper的装饰器），这个在BaseMapper的基础上做了参数加工和结果集加工（支持?占位符、时间格式化）
 7. 在CRUDTask文件中可以查看调用示例
+
+## 使用方式：
+1. **基本方式:** 只要集成BaseMapper的两个文件即可，集成和使用方式跟正常的Mapper相同
+2. **扩展方式:** 在基本方式的基础上集成BaseDAO（以及其依赖的两个\*Util文件），集成和使用方式就是等同于一般的静态工具类
 
 ## 联系人：
 有问题可以联系:zhangchuang@iie.ac.cn
