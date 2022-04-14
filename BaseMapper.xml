@@ -18,7 +18,11 @@
     </select>
 
     <insert id="insert">
-        ${sql}
+       ${sql}
+    </insert>
+
+    <insert id="insertForID" useGeneratedKeys="true" keyProperty="map.id">
+        ${map.sql}
     </insert>
 
     <update id="executeBatch" parameterType="List">
