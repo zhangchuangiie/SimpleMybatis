@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -44,6 +45,14 @@ public class BaseDAO{
 
     public static int insert(String sql,Object ...args){
         int result = baseDAO.baseMapper.insert(ParamUtil.paramReplace(sql),args);
+        return result;
+    }
+
+    public static int insertForID(Map map, Object ...args){
+
+        String sql = (String) map.get("sql");
+        map.put("sql",ParamUtil.paramReplace(sql));
+        int result = baseDAO.baseMapper.insertForID(map,args);
         return result;
     }
 
