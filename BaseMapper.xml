@@ -22,8 +22,13 @@
     </insert>
 
     <insert id="insertForID" useGeneratedKeys="true" keyProperty="map.id">
-        ${map.sql}
+        ${sql}
     </insert>
+
+    <select id="call"  statementType="CALLABLE" useCache="false" resultType="java.util.LinkedHashMap">
+        CALL ${sql}
+--         ${map.sql}
+    </select>
 
     <update id="executeBatch" parameterType="List">
         <foreach collection="sql" index="index" item="item">
