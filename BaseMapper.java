@@ -16,10 +16,11 @@ public interface BaseMapper {
     long count(String sql,Object ...args);
     LinkedHashMap<String, Object> get(String sql,Object ...args);
     int insert(String sql,Object ...args);
-    int insertForID(Map map,Object ...args);
+    int insertForID(String sql,Map map,Object ...args);
     int update(String sql,Object ...args);
     int delete(String sql,Object ...args);
     int execute(String sql,Object ...args);
     int executeBatch(List<String> sql,Object ...args);
+    List<LinkedHashMap<String, Object>> call(String sql,Map map,Object ...args);
 }
 
