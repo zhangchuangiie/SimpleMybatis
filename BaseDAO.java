@@ -48,11 +48,11 @@ public class BaseDAO{
         return result;
     }
 
-    public static int insertForID(Map map, Object ...args){
+    public static int insertForID(String sql,Map map, Object ...args){
 
-        String sql = (String) map.get("sql");
-        map.put("sql",ParamUtil.paramReplace(sql));
-        int result = baseDAO.baseMapper.insertForID(map,args);
+        //String sql = (String) map.get("sql");
+        //map.put("sql",ParamUtil.paramReplace(sql));
+        int result = baseDAO.baseMapper.insertForID(ParamUtil.paramReplace(sql),map,args);
         return result;
     }
 
@@ -74,7 +74,11 @@ public class BaseDAO{
         return result;
     }
 
+    public static List<LinkedHashMap<String, Object>> call(String sql, Map map, Object ...args){
 
+        List<LinkedHashMap<String, Object>> result = baseDAO.baseMapper.call(ParamUtil.paramReplace(sql),map,args);
+        return result;
+    }
 
 
 
