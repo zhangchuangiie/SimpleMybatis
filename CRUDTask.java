@@ -4,6 +4,7 @@ package com.example.demo.trigger.schedule;
 import com.example.demo.mapper.BaseDAO;
 import com.example.demo.mapper.BaseMapper;
 import com.example.demo.trigger.filter.ApiAccessFilter;
+import com.example.demo.util.JDBCUtil;
 import com.example.demo.util.ParamUtil;
 import com.example.demo.util.TimeUtil;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -51,6 +50,13 @@ public class CRUDTask {
             result = baseMapper.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(#{args[0]},#{args[1]},#{args[2]},#{args[3]})",name,password,number,currentDateString);
 
+            String sql = "INSERT INTO user(name,password,number,time) " +
+                    " VALUES(#{args[0]},#{args[1]},#{args[2]},#{args[3]})";
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            result = baseMapper.insertForID(sql,map, name, password, number, currentDateString);
+            System.out.println("id = " + map.get("id"));
+
             result = baseMapper.update("update user set name=#{args[0]},password=#{args[1]},number=#{args[2]} where id=#{args[3]}",name,password,number,id1);
 
             result = baseMapper.delete("delete from user where id=#{args[0]}",id);
@@ -61,11 +67,23 @@ public class CRUDTask {
 
             long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=#{args[0]} and password=#{args[1]} and number=#{args[2]}",name,password,number);
 */
+/*            Map<String, Object> map1 = new HashMap<String, Object>();
+            Integer a = 2;
+            Integer b = 4;
+            List<LinkedHashMap<String, Object>> resultList1 = baseMapper.call("add_num(#{args[0]},#{args[1]},#{map.c,mode=OUT,jdbcType=BIGINT})",map1,a,b);
+            System.out.println("map1 = " + map1);
+            System.out.println("resultList1 = " + resultList1);*/
 
 
             //使用BaseDAO
             result = BaseDAO.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(?,?,?,?)",name,password,number,currentDateString);
+
+            String sql = "INSERT INTO user(name,password,number,time) " +
+                    " VALUES(?,?,?,?)";
+            Map<String, Object> map = new HashMap<String, Object>();
+            result = BaseDAO.insertForID(sql,map, name,password,number,currentDateString);
+            System.out.println("id = " + map.get("id"));
 
             result = BaseDAO.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
 
@@ -77,6 +95,12 @@ public class CRUDTask {
 
             long resultCount =  BaseDAO.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
 
+            Map<String, Object> map1 = new HashMap<String, Object>();
+            Integer a = 2;
+            Integer b = 4;
+            List<LinkedHashMap<String, Object>> resultList1 = BaseDAO.call("add_num(?,?,#{map.c,mode=OUT,jdbcType=BIGINT})",map1,a,b);
+            System.out.println("map1 = " + map1);
+            System.out.println("resultList1 = " + resultList1);
 
 
 //            result = baseMapper.insert(ParamUtil.paramReplace("INSERT INTO user(name,password,number,time) " +
