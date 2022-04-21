@@ -1,5 +1,5 @@
 # SimpleMybatis
-一个基于Mybatis封装的类JdbcTemplate风格的ORM工具
+一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
 ## 特点：
 1. 无需为具体库表建立实体类和Mapper，统一使用BaseMapper即可
