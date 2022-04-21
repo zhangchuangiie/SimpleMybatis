@@ -27,5 +27,17 @@
 9. **executeBatch：** 支持批处理的接口，可以一次执行多条语句
 10. **call：** 支持调用存储过程的接口，支持带结果集存储过程，也支持带OUT参数
 
+## 接口列表：
+1. **select：** List<LinkedHashMap<String, Object>> select(String sql,Object ...args)
+2. **count:** long count(String sql,Object ...args)
+3. **get：** LinkedHashMap<String, Object> get(String sql,Object ...args)
+4. **insert：** int insert(String sql,Object ...args)
+5. **insertForID：** int insertForID(String sql,Map map,Object ...args)
+6. **update：** int update(String sql,Object ...args)
+7. **delete：** int delete(String sql,Object ...args)
+8. **execute：** int execute(String sql,Object ...args)
+9. **executeBatch：** int executeBatch(List<String> sql,Object ...args)
+10. **call：** List<LinkedHashMap<String, Object>> call(String sql,Map map,Object ...args)
+
 ## 联系人：
 有问题可以联系:zhangchuang@iie.ac.cn
