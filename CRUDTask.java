@@ -33,7 +33,7 @@ public class CRUDTask {
         System.out.println("----------定时器2：>" +  ApiAccessFilter.getProcessID() +" "+Thread.currentThread().getId() + " " + Thread.currentThread().getName());
 
         try {
-
+            long start = System.currentTimeMillis();   //获取开始时间
             String currentDateString = TimeUtil.getCurrentDateString();
 
             String name = "王五";
@@ -45,8 +45,8 @@ public class CRUDTask {
 
             int result = 0 ;
 
-/*
-            //直接使用baseMapper
+
+/*            //直接使用baseMapper
             result = baseMapper.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(#{args[0]},#{args[1]},#{args[2]},#{args[3]})",name,password,number,currentDateString);
 
@@ -66,23 +66,25 @@ public class CRUDTask {
             List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=#{args[0]} and password=#{args[1]} and number=#{args[2]}  ORDER BY #{args[3]} asc LIMIT 2,2",name,password,number,"time");
 
             long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=#{args[0]} and password=#{args[1]} and number=#{args[2]}",name,password,number);
-*/
-/*            Map<String, Object> map1 = new HashMap<String, Object>();
+
+            Map<String, Object> map1 = new HashMap<String, Object>();
             Integer a = 2;
             Integer b = 4;
             List<LinkedHashMap<String, Object>> resultList1 = baseMapper.call("add_num(#{args[0]},#{args[1]},#{map.c,mode=OUT,jdbcType=BIGINT})",map1,a,b);
             System.out.println("map1 = " + map1);
-            System.out.println("resultList1 = " + resultList1);*/
+            System.out.println("resultList1 = " + resultList1);
+
+            result = baseMapper.execute("Truncate Table log");
+            System.out.println("result = " + result);*/
 
 
             //使用BaseDAO
             result = BaseDAO.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(?,?,?,?)",name,password,number,currentDateString);
 
-            String sql = "INSERT INTO user(name,password,number,time) " +
-                    " VALUES(?,?,?,?)";
             Map<String, Object> map = new HashMap<String, Object>();
-            result = BaseDAO.insertForID(sql,map, name,password,number,currentDateString);
+            result = BaseDAO.insertForID("INSERT INTO user(name,password,number,time) " +
+                    " VALUES(?,?,?,?)",map, name,password,number,currentDateString);
             System.out.println("id = " + map.get("id"));
 
             result = BaseDAO.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
@@ -103,22 +105,29 @@ public class CRUDTask {
             System.out.println("resultList1 = " + resultList1);
 
 
-//            result = baseMapper.insert(ParamUtil.paramReplace("INSERT INTO user(name,password,number,time) " +
-//                    " VALUES(?,?,?,?)"),name,password,number,currentDateString);
-//
-//            List<String> sql = new ArrayList<String>();
-//            for (int i = 0; i < 1000; i++) {
-//                sql.add("INSERT INTO user(name,password,number,time) VALUES('王五','sss',70,'" + currentDateString + "')");
+            List<String> sql = new ArrayList<String>();
+            for (int i = 0; i < 1000; i++) {
+                sql.add("INSERT INTO user(name,password,number,time) VALUES('王五','sss',70,'" + currentDateString + "')");
+
+            }
+//            String sql = "INSERT INTO user(name,password,number,time) VALUES('王五','sss',70,'" + currentDateString + "')";
+//            for (int i = 0; i < 20000; i++) {
+//                sql += ",('王五','sss',70,'" + currentDateString + "')";
 //
 //            }
-//
-//
-//            long start = System.currentTimeMillis();   //获取开始时间
-//
-//            int result = baseMapper.executeBatch(sql);
-//            System.out.println("result:" + result);
-//            long end = System.currentTimeMillis(); //获取结束时间
-//            System.out.println("111程序运行时间： " + (end - start) + "ms");
+            System.out.println("size:" + sql.size());
+            int re = BaseDAO.executeBatch(sql);
+            System.out.println("re = " + re);
+
+
+
+//            result=  BaseDAO.execute("Truncate Table log");
+//            System.out.println("result = " + result);
+
+
+
+            long end = System.currentTimeMillis(); //获取结束时间
+            System.out.println("111程序运行时间： " + (end - start) + "ms");
 
 
             Thread.sleep(3000);
