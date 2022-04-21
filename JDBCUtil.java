@@ -365,6 +365,12 @@ public class JDBCUtil {
 //            int result= JDBCUtil.insert("INSERT INTO user(name,password,number,time) VALUES(?,'sss',70,'"+currentDateString+"')","王五新");
 //            System.out.println("result = " + result);
 
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            int result = com.example.demo.util.JDBCUtil.insertForID("INSERT INTO user(name,password,number,time) " +
+//                    " VALUES(?,?,?,?)",map, "王五","sss",70, currentDateString);
+//            System.out.println("id = " + map.get("id"));
+
+
 
 //            int result=  JDBCUtil.execute("Truncate Table log");
 //            System.out.println("result = " + result);
@@ -385,10 +391,6 @@ public class JDBCUtil {
             int re = JDBCUtil.executeBatch(sql);
             System.out.println("re = " + re);
 
-            Map<String, Object> map = new HashMap<String, Object>();
-            int result = JDBCUtil.insertForID("INSERT INTO user(name,password,number,time) " +
-                    " VALUES(?,?,?,?)",map, "王五","sss",70, currentDateString);
-            System.out.println("id = " + map.get("id"));
 
 
             List<Triplet> tripletList = new ArrayList<Triplet>();
