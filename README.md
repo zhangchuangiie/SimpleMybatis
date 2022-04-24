@@ -2,20 +2,18 @@
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
 ## 典型示例：
-    @PostMapping(value = "insert")
-    public RespValue insert(@RequestParam("name")String name,
+     @PostMapping(value = "insert")
+     public RespValue insert(@RequestParam("name")String name,
                             @RequestParam("number")Integer number,
                             @RequestParam("password")String password){
             int result = baseMapper.insert("INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)",map,name,password,number,TimeUtil.getCurrentDateString());
             return new RespValue(0,"插入成功",result);
-   }
-   
+    }
     @PostMapping(value = "findObjectById")
     public RespValue findObjectById(@RequestParam("id") Integer id){
         LinkedHashMap<String, Object> result =  baseMapper.get("SELECT  * FROM user where  id=?",id);
         return new RespValue(0,"查询成功",result);
     }
-   
     @PostMapping(value="findListByCondition")
     public RespValue findListByCondition(@RequestParam(name="name",required = false)String name,
                                           @RequestParam(name="number",required = false)Integer number,
