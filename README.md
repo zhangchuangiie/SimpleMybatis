@@ -7,13 +7,13 @@
 3. 将controller、entity、mapper、service、resources简化为只要在controller接口里面直接写逻辑，每一组接口只要写一个java文件
 4. 对DDL，DCL也很好的支持，适合大量动态建表的业务
 5. BaseMapper将数据库操作抽象为10种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作
-6. 可以直接使用BaseMapper，也可以使用进一步封装的BaseDAO（相当于BaseMapper的装饰器），这个在BaseMapper的基础上做了参数加工和结果集加工（支持?占位符、时间格式化），还有一个单文件集成的原生JDBCUtil版本，三个版本接口的基本形式都是一样的
-7. 在CRUDTask文件中可以查看调用示例
+6. 正常直接使用BaseMapper（带BaseMapperDecoratorAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
+7. 支持JDBC中?占位符,跟原生JDBC的SQL占位符写法习惯一致，实际的值通过后面的可变参数传递
+8. 在CRUDTask文件中可以查看调用示例
 
 ## 使用方式：
-1. **基本方式:** 只要集成BaseMapper的两个文件即可，集成和使用方式跟正常的Mapper相同
-2. **扩展方式:** 在基本方式的基础上集成BaseDAO（以及其依赖的两个\*Util文件），集成和使用方式就是等同于一般的静态工具类
-3. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper和BaseDAO是一样的，这种方式只需要集成一个JDBCUtil文件即可
+1. **正常方式:** 只要集成4个BaseMapper\*文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecorator为自定义注解，BaseMapperDecoratorAspect是装饰器（参数占位符加工）
+2. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper是一样的，这种方式只需要集成一个JDBCUtil文件即可
 
 ## 接口介绍：
 1. **select：** 所有的结果集查询接口，直接拼SQL查询语句一行代码调用函数即可，返回值就是直接SpringBoot可以响应的格式（当然也可以加工后返回），无需bean，无需新建mapper，支持分组查询，连接查询，子查询，组合查询（UNION），视图查询，各种统计类的查询也直接用这个接口即可，别名as什么SpringBoot响应的json字段就是什么（也就是LinkedHashMap的key）
