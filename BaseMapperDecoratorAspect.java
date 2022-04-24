@@ -1,6 +1,7 @@
 package com.example.demo.trigger.aspect;
 
 
+import com.example.demo.util.FormatTimeUtil;
 import com.example.demo.util.ParamUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Component
@@ -34,7 +36,7 @@ public class BaseMapperDecoratorAspect {
             String sql = (String) o;
             sql = ParamUtil.paramReplace(sql);
             args[0]= sql;
-            System.out.println("1111111111111111111111111111111111111sql = " + sql);
+
         }else{
             List<String> sql = (List<String>) o;
             sql = ParamUtil.paramReplace(sql);
@@ -43,6 +45,17 @@ public class BaseMapperDecoratorAspect {
         }
 
         Object result = pjp.proceed(args);
+        System.out.println("result.getClass().getName() = " + result.getClass().getName());
+
+        if (result.getClass().getName().equals("java.util.ArrayList")){
+
+            FormatTimeUtil.formatTimeOfListMap((List<LinkedHashMap<String, Object>>) result);
+        }else if(result.getClass().getName().equals("java.util.ArrayList")) {
+            FormatTimeUtil.formatTimeOfObjectMap((LinkedHashMap<String, Object>) result);
+
+        }else{
+
+        }
 
         return result;
 
