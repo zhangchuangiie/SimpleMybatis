@@ -1,10 +1,7 @@
 package com.example.demo.mapper;
 
-import com.example.demo.entity.User;
 import com.example.demo.trigger.aspect.BaseMapperDecorator;
-import com.example.demo.trigger.aspect.SignCheck;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.LinkedHashMap;
 import java.util.List;
