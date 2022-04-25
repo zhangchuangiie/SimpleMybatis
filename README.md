@@ -1,4 +1,4 @@
-# SimpleMybatis
+# SimpleMybatis（Mybatis通用Mapper）
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
 ## 典型示例：
