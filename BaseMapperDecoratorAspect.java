@@ -19,9 +19,8 @@ import java.util.List;
 @Component
 @Aspect
 public class BaseMapperDecoratorAspect {
-
-    //这个是将自己自定义注解作为切点的根据，路径一定要写正确了
-    @Pointcut(value = "@annotation(com.example.demo.trigger.aspect.BaseMapperDecorator)")
+    //切入点表达式，路径一定要写正确了
+    @Pointcut("execution( * com.example.demo.mapper.BaseMapper.*(..))")
     public void access() {
     }
 
@@ -29,6 +28,8 @@ public class BaseMapperDecoratorAspect {
     @Around("access()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         System.out.println("-aop 环绕阶段-" + new Date());
+
+        System.out.println("METHOD = " + pjp.getSignature().getName());
 
         Object[] args = pjp.getArgs();
         Object o = args[0];
