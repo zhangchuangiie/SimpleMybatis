@@ -51,8 +51,9 @@
 8. 在CRUDTask文件中可以查看调用示例
 
 ## 使用方式：
-1. **正常方式:** 集成3个BaseMapper\*文件和2个\*Util文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecorator为自定义注解，BaseMapperDecoratorAspect是装饰器（参数占位符加工和结果集时间格式化）
-2. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper是一样的，这种方式只需要集成一个JDBCUtil文件即可
+1. **试用模式:** 只需要集成2个BaseMapper文件即可，集成和使用方式跟正常的Mapper相同（在不使用?占位符和不需要时间格式化的情况下，跟正常模式接口完全一样）
+2. **正常方式:** 集成3个BaseMapper\*文件和2个\*Util文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecoratorAspect是装饰器（参数占位符加工和结果集时间格式化）
+3. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper是一样的，这种方式只需要集成一个JDBCUtil文件即可
 
 ## 接口介绍：
 1. **select：** 所有的结果集查询接口，直接拼SQL查询语句一行代码调用函数即可，返回值就是直接SpringBoot可以响应的格式（当然也可以加工后返回），无需bean，无需新建mapper，支持分组查询，连接查询，子查询，组合查询（UNION），视图查询，各种统计类的查询也直接用这个接口即可，别名as什么SpringBoot响应的json字段就是什么（也就是LinkedHashMap的key）
