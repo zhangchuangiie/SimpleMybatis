@@ -51,7 +51,7 @@
 8. 在CRUDTask文件中可以查看调用示例
 
 ## 使用方式：
-1. **正常方式:** 集成4个BaseMapper\*文件和2个\*Util文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecorator为自定义注解，BaseMapperDecoratorAspect是装饰器（参数占位符加工和结果集时间格式化）
+1. **正常方式:** 集成3个BaseMapper\*文件和2个\*Util文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecorator为自定义注解，BaseMapperDecoratorAspect是装饰器（参数占位符加工和结果集时间格式化）
 2. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper是一样的，这种方式只需要集成一个JDBCUtil文件即可
 
 ## 接口介绍：
