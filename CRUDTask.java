@@ -78,35 +78,35 @@ public class CRUDTask {
             System.out.println("result = " + result);*/
 
 
-            //使用BaseDAO
-            result = BaseDAO.insert("INSERT INTO user(name,password,number,time) " +
+            //使用baseMapper(LogTrackAspect)
+            result = baseMapper.insert("INSERT INTO user(name,password,number,time) " +
                     " VALUES(?,?,?,?)",name,password,number,currentDateString);
 
             Map<String, Object> map = new HashMap<String, Object>();
-            result = BaseDAO.insertForID("INSERT INTO user(name,password,number,time) " +
+            result = baseMapper.insertForID("INSERT INTO user(name,password,number,time) " +
                     " VALUES(?,?,?,?)",map, name,password,number,currentDateString);
             System.out.println("id = " + map.get("id"));
 
-            result = BaseDAO.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
+            result = baseMapper.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
 
-            result = BaseDAO.delete("delete from user where id=?",id);
+            result = baseMapper.delete("delete from user where id=?",id);
 
-            LinkedHashMap<String, Object> resultObject =  BaseDAO.get("SELECT  * FROM user where  id=?",id1);
+            LinkedHashMap<String, Object> resultObject =  baseMapper.get("SELECT  * FROM user where  id=?",id1);
 
-            List<LinkedHashMap<String, Object>> resultList =  BaseDAO.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 2,2",name,password,number,"time");
+            List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 2,2",name,password,number,"time");
 
-            long resultCount =  BaseDAO.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
+            long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
 
             Map<String, Object> map1 = new HashMap<String, Object>();
             Integer a = 2;
             Integer b = 4;
-            List<LinkedHashMap<String, Object>> resultList1 = BaseDAO.call("add_num(?,?,#{map.c,mode=OUT,jdbcType=BIGINT})",map1,a,b);
+            List<LinkedHashMap<String, Object>> resultList1 = baseMapper.call("add_num(?,?,#{map.c,mode=OUT,jdbcType=BIGINT})",map1,a,b);
             System.out.println("map1 = " + map1);
             System.out.println("resultList1 = " + resultList1);
 
 
             List<String> sql = new ArrayList<String>();
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 sql.add("INSERT INTO user(name,password,number,time) VALUES('王五','sss',70,'" + currentDateString + "')");
 
             }
@@ -116,13 +116,13 @@ public class CRUDTask {
 //
 //            }
             System.out.println("size:" + sql.size());
-            int re = BaseDAO.executeBatch(sql);
+            int re = baseMapper.executeBatch(sql);
             System.out.println("re = " + re);
 
 
 
-//            result=  BaseDAO.execute("Truncate Table log");
-//            System.out.println("result = " + result);
+            result=  baseMapper.execute("Truncate Table log");
+            System.out.println("result = " + result);
 
 
 
