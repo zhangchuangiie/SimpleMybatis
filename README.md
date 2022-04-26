@@ -46,13 +46,13 @@
 3. 将controller、entity、mapper、service、resources简化为只要在controller接口里面直接写逻辑，每一组接口只要写一个java文件
 4. 对DDL，DCL也很好的支持，适合大量动态建表的业务
 5. BaseMapper将数据库操作抽象为10种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作
-6. 正常直接使用BaseMapper（带BaseMapperDecoratorAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
+6. 正常直接使用BaseMapper（带BaseMapperAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
 7. 支持JDBC中?占位符，跟原生JDBC的SQL占位符写法习惯一致，实际的值通过后面的可变参数传递
 8. 在CRUDTask文件中可以查看调用示例
 
 ## 使用方式：
 1. **试用方式:** 只需要集成1个BaseMapper文件即可，集成和使用方式跟正常的Mapper相同（在不使用?占位符和不需要时间格式化的情况下，跟正常模式接口完全一样）
-2. **正常方式:** 集成2个BaseMapper\*文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperDecoratorAspect是装饰器（参数占位符加工和结果集时间格式化）
+2. **正常方式:** 集成2个BaseMapper\*文件即可，集成和使用方式跟正常的Mapper相同，BaseMapperAspect是装饰器（参数占位符加工和结果集时间格式化）
 3. **备用方式:** 为在没有Mybatis的环境下使用该风格接口，直接用JDBC实现了原生版本，接口跟BaseMapper是一样的，这种方式只需要集成一个JDBCUtil文件即可
 
 ## 接口介绍：
