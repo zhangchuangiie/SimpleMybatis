@@ -2,43 +2,20 @@
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
 ## 典型示例：
-     @PostMapping(value = "insert")
-     public RespValue insert(@RequestParam("name")String name,
-                            @RequestParam("number")Integer number,
-                            @RequestParam("password")String password){
-            int result = baseMapper.insert("INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)",map,name,password,number,TimeUtil.getCurrentDateString());
-            return new RespValue(0,"插入成功",result);
-    }
-    @PostMapping(value = "findObjectById")
-    public RespValue findObjectById(@RequestParam("id") Integer id){
-        LinkedHashMap<String, Object> result =  baseMapper.get("SELECT  * FROM user where  id=?",id);
-        return new RespValue(0,"查询成功",result);
-    }
-    @PostMapping(value="findListByCondition")
-    public RespValue findListByCondition(@RequestParam(name="name",required = false)String name,
-                                          @RequestParam(name="number",required = false)Integer number,
-                                          @RequestParam(name="password",required = false)String password,
-                                          @RequestParam(name="orderColumn",required = false)String orderColumn,
-                                          @RequestParam(name="orderDirection",required = false)String orderDirection,
-                                          @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                                          @RequestParam(name = "pageSize", required = false)Integer pageSize){
+List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 2,2",name,password,number,"time");
 
-        if(pageNum == null) pageNum = 1;
-        if(pageSize == null) pageSize = 10;
-        List<Object> args = new ArrayList<Object>();
-        String sqlStr = "SELECT * FROM user where 1=1 ";
-        if(name != null && !"".equals(name)){sqlStr += "and name=? ";args.add(name);}
-        if(password != null && !"".equals(password)){sqlStr += "and password=? ";args.add(password);}
-        if(number != null && number!=-1){sqlStr += "and number=? ";args.add(number);}
-        if(orderColumn != null && orderDirection != null){
-            sqlStr += " ORDER BY ? "+orderDirection;args.add(orderColumn);
-        }else{
-            sqlStr += " ORDER BY id desc ";
-        }
-        sqlStr += " LIMIT " + (pageNum-1)*pageSize + ","+pageSize;
-        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,args.toArray());
-        return new RespValue(0,"查询成功",result);
-   }
+long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
+
+LinkedHashMap<String, Object> resultObject =  baseMapper.get("SELECT  * FROM user where  id=?",id1);
+
+int result = baseMapper.insert("INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)",name,password,number,currentDateString);
+
+int result = baseMapper.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
+
+int result = baseMapper.delete("delete from user where id=?",id);
+
+int result=  baseMapper.execute("Truncate Table log");
+
 
 ## 特点：
 1. 无需为具体库表建立实体类和Mapper，统一使用BaseMapper即可
