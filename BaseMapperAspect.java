@@ -1,7 +1,5 @@
 package com.example.demo.trigger.aspect;
 
-
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -64,7 +62,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static int getKeyStringCount(String str, String key) {//方法
+    private int getKeyStringCount(String str, String key) {//方法
         int count = 0;
         int index = 0;
         while((index = str.indexOf(key,index))!=-1){
@@ -75,7 +73,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static String paramReplace(String param) {
+    private String paramReplace(String param) {
 
         int mun = getKeyStringCount(param,"?");
         System.out.println("mun = " + mun);
@@ -89,7 +87,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static List<String> paramReplace(List<String> paramList) {
+    private List<String> paramReplace(List<String> paramList) {
 
         int total = 0;
 
@@ -112,7 +110,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static String timeStamp2DateString(Timestamp timeStamp) {
+    private String timeStamp2DateString(Timestamp timeStamp) {
 
 
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -121,7 +119,7 @@ public class BaseMapperAspect {
 
     }
 
-    public static int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result,String formatKey) {
+    private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result,String formatKey) {
 
         int n = 0;
         for (LinkedHashMap<String, Object> m : result) {
@@ -138,7 +136,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result) {
+    private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result) {
 
         int n = 0;
         for (LinkedHashMap<String, Object> m : result) {
@@ -157,7 +155,7 @@ public class BaseMapperAspect {
     }
 
 
-    public static int formatTimeOfObjectMap(LinkedHashMap<String, Object> result) {
+    private int formatTimeOfObjectMap(LinkedHashMap<String, Object> result) {
 
         int n = 0;
 
