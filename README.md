@@ -2,19 +2,19 @@
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
 ## 典型示例：
-1. List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 1. 2,2",name,password,number,"time");
+```1. List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 1. 2,2",name,password,number,"time");
 
-2. long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
+```2. long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
 
-3. LinkedHashMap<String, Object> resultObject =  baseMapper.get("SELECT  * FROM user where  id=?",id1);
+```3. LinkedHashMap<String, Object> resultObject =  baseMapper.get("SELECT  * FROM user where  id=?",id1);
 
-4. int result = baseMapper.insert("INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)",name,password,number,currentDateString);
+```4. int result = baseMapper.insert("INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)",name,password,number,currentDateString);
 
-5. int result = baseMapper.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
+```5. int result = baseMapper.update("update user set name=?,password=?,number=? where id=?",name,password,number,id1);
 
-6. int result = baseMapper.delete("delete from user where id=?",id);
+```6. int result = baseMapper.delete("delete from user where id=?",id);
 
-7. int result=  baseMapper.execute("Truncate Table log");
+```7. int result=  baseMapper.execute("Truncate Table log");
 
 
 ## 特点：
