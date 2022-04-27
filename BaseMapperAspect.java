@@ -124,7 +124,7 @@ public class BaseMapperAspect {
         int n = 0;
         for (LinkedHashMap<String, Object> m : result) {
             System.out.println("m = " + m);
-            if(m==null) break;
+            if(m==null) continue;
             for (String k : m.keySet()) {
                 //System.out.println(k + " : " + m.get(k));
                 //System.out.println(m.get(k).getClass().getName());
@@ -143,7 +143,7 @@ public class BaseMapperAspect {
     private int formatTimeOfObjectMap(LinkedHashMap<String, Object> result) {
 
         int n = 0;
-
+        if(result==null) return 0;
         for (String k : result.keySet()) {
             //System.out.println(k + " : " + result.get(k));
             //System.out.println(result.get(k).getClass().getName());
