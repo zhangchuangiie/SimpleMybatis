@@ -119,27 +119,12 @@ public class BaseMapperAspect {
 
     }
 
-    private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result,String formatKey) {
-
-        int n = 0;
-        for (LinkedHashMap<String, Object> m : result) {
-            for (String k : m.keySet()) {
-                //System.out.println(k + " : " + m.get(k));
-                if (formatKey.equals(k)) {
-                    m.put(k, timeStamp2DateString((Timestamp) m.get(k)));
-                    n++;
-                }
-            }
-
-        }
-        return n;
-    }
-
-
     private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result) {
 
         int n = 0;
         for (LinkedHashMap<String, Object> m : result) {
+            System.out.println("m = " + m);
+            if(m==null) break;
             for (String k : m.keySet()) {
                 //System.out.println(k + " : " + m.get(k));
                 //System.out.println(m.get(k).getClass().getName());
