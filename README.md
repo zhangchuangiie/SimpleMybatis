@@ -3,6 +3,7 @@
 
 ## 典型示例：
 ```Java 1. List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 1. 2,2",name,password,number,"time");
+```
 
 2. long resultCount =  baseMapper.count("SELECT count(*) FROM user where 1=1 and name=? and password=? and number=?",name,password,number);
 
