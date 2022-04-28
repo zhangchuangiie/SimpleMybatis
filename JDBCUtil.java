@@ -1,9 +1,13 @@
 package com.example.demo.util;
 
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import org.javatuples.Triplet;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 public class JDBCUtil {
@@ -16,9 +20,9 @@ public class JDBCUtil {
             Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
 
             System.out.println("数据库驱动加载成功！！");
-            String url = "jdbc:mysql://192.168.*.*:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
+            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
             String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
-            String passWord = "***********"; // 定义连接数据库的密码
+            String passWord = "SQL@cent110"; // 定义连接数据库的密码
             conn = DriverManager.getConnection(url, user, passWord); // 连接连接
             System.out.println("已成功的与MySQL数据库建立连接！！");
             long end=System.currentTimeMillis(); //获取结束时间
@@ -30,6 +34,78 @@ public class JDBCUtil {
     }
 
 
+//    public static Connection getConnection() {
+//        try {
+//            long start = System.currentTimeMillis();   //获取开始时间
+//            //Class.forName("com.mysql.jdbc.Driver"); // 加载MySQL数据库驱动
+////            Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
+////
+//            System.out.println("数据库驱动加载成功！！");
+//            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
+//            String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
+//            String passWord = "SQL@cent110"; // 定义连接数据库的密码
+//            HikariConfig hikariConfig = new HikariConfig();
+//            hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//            //设置url
+//            hikariConfig.setJdbcUrl(url);
+//            //数据库帐号
+//            hikariConfig.setUsername(user);
+//            //数据库密码
+//            hikariConfig.setPassword(passWord);
+//            hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+//            hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+//            hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+//            HikariDataSource ds = new HikariDataSource(hikariConfig);
+//            conn = ds.getConnection();
+//            System.out.println("已成功的与MySQL数据库建立连接！！");
+//            long end = System.currentTimeMillis(); //获取结束时间
+//            System.out.println("程序运行时间(连接)： " + (end - start) + "ms");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return conn;
+//    }
+
+//    public static Connection getConnection() {
+//        try {
+//            long start = System.currentTimeMillis();   //获取开始时间
+//            //Class.forName("com.mysql.jdbc.Driver"); // 加载MySQL数据库驱动
+////            Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
+////
+//            System.out.println("数据库驱动加载成功！！");
+//            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
+//            String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
+//            String passWord = "SQL@cent110"; // 定义连接数据库的密码
+////            conn = DriverManager.getConnection(url, user, passWord); // 连接连接
+//
+//            BasicDataSource source = new BasicDataSource();
+//
+//            source.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//            source.setUrl(url);
+//            source.setUsername(user);
+//            source.setPassword(passWord);
+//
+//            //
+//            //source.setInitialSize(10);
+//
+//
+//            conn = source.getConnection();
+//
+//            System.out.println("已成功的与MySQL数据库建立连接！！");
+//            long end = System.currentTimeMillis(); //获取结束时间
+//            System.out.println("程序运行时间(连接)： " + (end - start) + "ms");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return conn;
+//    }
+    public static Timestamp localDateTime2TimeStamp(LocalDateTime localDateTime) {
+
+        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        return timeStamp;
+
+    }
+
 
     public static List<LinkedHashMap<String, Object>> rs2list(ResultSet rs) {
         List<LinkedHashMap<String, Object>> result = new ArrayList<LinkedHashMap<String,Object>>();
@@ -39,15 +115,23 @@ public class JDBCUtil {
             while (rs.next()) {
                 LinkedHashMap<String, Object> rowData = new LinkedHashMap<String, Object>();
                 for (int i = 1; i <= columnCount; i++) {
-                    //System.out.println(md.getColumnName(i)+":"+md.getColumnTypeName(i));
+                    if(rs.getObject(i) == null) continue;
+                    //System.out.println(md.getColumnName(i)+"*:"+md.getColumnTypeName(i)+":"+md.getColumnClassName(i));
+                    //System.out.println(rs.getObject(i) + "*=" + rs.getObject(i).getClass().getName());
+                    Object tmp = null;
+                    if("java.sql.Timestamp".equals(md.getColumnClassName(i))){
+                        tmp=localDateTime2TimeStamp((LocalDateTime) rs.getObject(i));
+                    }else{
+                        tmp=rs.getObject(i);
+                    }
                     if(rowData.containsKey(md.getColumnName(i))){
                         if(rowData.containsKey(md.getColumnName(i)+"_rename")){
-                            rowData.put(md.getColumnName(i)+"_rename_rename", rs.getObject(i));
+                            rowData.put(md.getColumnName(i)+"_rename_rename", tmp);
                         }else{
-                            rowData.put(md.getColumnName(i)+"_rename", rs.getObject(i));
+                            rowData.put(md.getColumnName(i)+"_rename", tmp);
                         }
                     }else{
-                        rowData.put(md.getColumnName(i), rs.getObject(i));
+                        rowData.put(md.getColumnName(i), tmp);
                     }
 
                 }
@@ -366,17 +450,16 @@ public class JDBCUtil {
 //            System.out.println("result = " + result);
 
 //            Map<String, Object> map = new HashMap<String, Object>();
-//            int result = com.example.demo.util.JDBCUtil.insertForID("INSERT INTO user(name,password,number,time) " +
+//            int result = JDBCUtil.insertForID("INSERT INTO user(name,password,number,time) " +
 //                    " VALUES(?,?,?,?)",map, "王五","sss",70, currentDateString);
 //            System.out.println("id = " + map.get("id"));
-
 
 
 //            int result=  JDBCUtil.execute("Truncate Table log");
 //            System.out.println("result = " + result);
 
 
-            List<String> sql = new ArrayList<String>();
+/*            List<String> sql = new ArrayList<String>();
             for (int i = 0; i < 1000; i++) {
                 sql.add("INSERT INTO user(name,password,number,time) VALUES('王五','sss',70,'" + currentDateString + "')");
 
@@ -389,11 +472,12 @@ public class JDBCUtil {
 //            }
             System.out.println("size:" + sql.size());
             int re = JDBCUtil.executeBatch(sql);
-            System.out.println("re = " + re);
+            System.out.println("re = " + re);*/
 
 
 
-            List<Triplet> tripletList = new ArrayList<Triplet>();
+
+/*            List<Triplet> tripletList = new ArrayList<Triplet>();
             tripletList.add(Triplet.with("c", 3, Types.BIGINT));
             Map<String, Object> map1 = new HashMap<String, Object>();
             map1.put("tripletList",tripletList);
@@ -401,7 +485,7 @@ public class JDBCUtil {
             Integer b = 4;
             List<LinkedHashMap<String, Object>> resultList1 = JDBCUtil.call("add_num(?,?,?)",map1,a,b);
             System.out.println("map1 = " + map1);
-            System.out.println("resultList1 = " + resultList1);
+            System.out.println("resultList1 = " + resultList1);*/
 
 //////////////////////////////////可变参数PreparedStatement///////////////////////////////////////
 
