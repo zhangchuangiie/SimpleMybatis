@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -119,6 +121,15 @@ public class BaseMapperAspect {
 
     }
 
+    private String timeStamp2DateString(LocalDateTime localDateTime) {
+
+        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return fm.format(timeStamp);
+
+
+    }
+
     private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result) {
 
         int n = 0;
@@ -133,6 +144,12 @@ public class BaseMapperAspect {
                     m.put(k, timeStamp2DateString((Timestamp) m.get(k)));
                     n++;
                 }
+                if (m.get(k) != null && "java.time.LocalDateTime".equals(m.get(k).getClass().getName())) {
+
+                    m.put(k, timeStamp2DateString((LocalDateTime) m.get(k)));
+                    n++;
+                }
+
             }
 
         }
@@ -150,6 +167,10 @@ public class BaseMapperAspect {
 
             if (result.get(k) != null && "java.sql.Timestamp".equals(result.get(k).getClass().getName())) {
                 result.put(k, timeStamp2DateString((Timestamp) result.get(k)));
+                n++;
+            }
+            if (result.get(k) != null && "java.time.LocalDateTime".equals(result.get(k).getClass().getName())) {
+                result.put(k, timeStamp2DateString((LocalDateTime) result.get(k)));
                 n++;
             }
         }
