@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 @Component
 @Aspect
@@ -113,21 +114,16 @@ public class BaseMapperAspect {
 
 
     private String timeStamp2DateString(Timestamp timeStamp) {
-
-
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //fm.setTimeZone(TimeZone.getTimeZone("UTC"));
         return fm.format(timeStamp);
-
-
     }
 
     private String timeStamp2DateString(LocalDateTime localDateTime) {
 
-        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+0")).toEpochMilli());
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return fm.format(timeStamp);
-
-
     }
 
     private int formatTimeOfListMap(List<LinkedHashMap<String, Object>> result) {
@@ -137,11 +133,22 @@ public class BaseMapperAspect {
             System.out.println("m = " + m);
             if(m==null) continue;
             for (String k : m.keySet()) {
-                //System.out.println(k + " : " + m.get(k));
-                //System.out.println(m.get(k).getClass().getName());
+                System.out.println(k + " : " + m.get(k));
+
+                if (m.get(k) != null) {
+                    System.out.println(m.get(k).getClass().getName());
+                }
 
                 if (m.get(k) != null && "java.sql.Timestamp".equals(m.get(k).getClass().getName())) {
                     m.put(k, timeStamp2DateString((Timestamp) m.get(k)));
+                    n++;
+                }
+                if (m.get(k) != null && "java.sql.Date".equals(m.get(k).getClass().getName())) {
+                    m.put(k, m.get(k).toString());
+                    n++;
+                }
+                if (m.get(k) != null && "java.sql.Time".equals(m.get(k).getClass().getName())) {
+                    m.put(k, m.get(k).toString());
                     n++;
                 }
                 if (m.get(k) != null && "java.time.LocalDateTime".equals(m.get(k).getClass().getName())) {
@@ -167,6 +174,14 @@ public class BaseMapperAspect {
 
             if (result.get(k) != null && "java.sql.Timestamp".equals(result.get(k).getClass().getName())) {
                 result.put(k, timeStamp2DateString((Timestamp) result.get(k)));
+                n++;
+            }
+            if (result.get(k) != null && "java.sql.Date".equals(result.get(k).getClass().getName())) {
+                result.put(k, result.get(k).toString());
+                n++;
+            }
+            if (result.get(k) != null && "java.sql.Time".equals(result.get(k).getClass().getName())) {
+                result.put(k, result.get(k).toString());
                 n++;
             }
             if (result.get(k) != null && "java.time.LocalDateTime".equals(result.get(k).getClass().getName())) {
