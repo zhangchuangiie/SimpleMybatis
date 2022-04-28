@@ -20,9 +20,9 @@ public class JDBCUtil {
             Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
 
             System.out.println("数据库驱动加载成功！！");
-            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
+            String url = "jdbc:mysql://192.168.*.*:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
             String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
-            String passWord = "SQL@cent110"; // 定义连接数据库的密码
+            String passWord = ""; // 定义连接数据库的密码
             conn = DriverManager.getConnection(url, user, passWord); // 连接连接
             System.out.println("已成功的与MySQL数据库建立连接！！");
             long end=System.currentTimeMillis(); //获取结束时间
@@ -34,71 +34,6 @@ public class JDBCUtil {
     }
 
 
-//    public static Connection getConnection() {
-//        try {
-//            long start = System.currentTimeMillis();   //获取开始时间
-//            //Class.forName("com.mysql.jdbc.Driver"); // 加载MySQL数据库驱动
-////            Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
-////
-//            System.out.println("数据库驱动加载成功！！");
-//            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
-//            String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
-//            String passWord = "SQL@cent110"; // 定义连接数据库的密码
-//            HikariConfig hikariConfig = new HikariConfig();
-//            hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//            //设置url
-//            hikariConfig.setJdbcUrl(url);
-//            //数据库帐号
-//            hikariConfig.setUsername(user);
-//            //数据库密码
-//            hikariConfig.setPassword(passWord);
-//            hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
-//            hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
-//            hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-//            HikariDataSource ds = new HikariDataSource(hikariConfig);
-//            conn = ds.getConnection();
-//            System.out.println("已成功的与MySQL数据库建立连接！！");
-//            long end = System.currentTimeMillis(); //获取结束时间
-//            System.out.println("程序运行时间(连接)： " + (end - start) + "ms");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return conn;
-//    }
-
-//    public static Connection getConnection() {
-//        try {
-//            long start = System.currentTimeMillis();   //获取开始时间
-//            //Class.forName("com.mysql.jdbc.Driver"); // 加载MySQL数据库驱动
-////            Class.forName("com.mysql.cj.jdbc.Driver"); // 加载MySQL数据库驱动
-////
-//            System.out.println("数据库驱动加载成功！！");
-//            String url = "jdbc:mysql://192.168.126.3:3306/user?serverTimezone=UTC&useSSL=false&allowMultiQueries=true"; // 定义与连接数据库的url
-//            String user = "root"; // 定义连接数据库的用户名     上面  不加 ?useSSL=false  会有警告 大概的意思就是说建立ssl连接，但是服务器没有身份认证，这种方式不推荐使用。
-//            String passWord = "SQL@cent110"; // 定义连接数据库的密码
-////            conn = DriverManager.getConnection(url, user, passWord); // 连接连接
-//
-//            BasicDataSource source = new BasicDataSource();
-//
-//            source.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//            source.setUrl(url);
-//            source.setUsername(user);
-//            source.setPassword(passWord);
-//
-//            //
-//            //source.setInitialSize(10);
-//
-//
-//            conn = source.getConnection();
-//
-//            System.out.println("已成功的与MySQL数据库建立连接！！");
-//            long end = System.currentTimeMillis(); //获取结束时间
-//            System.out.println("程序运行时间(连接)： " + (end - start) + "ms");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return conn;
-//    }
     public static Timestamp localDateTime2TimeStamp(LocalDateTime localDateTime) {
 
         Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
