@@ -112,7 +112,7 @@ public class BaseMapperAspect {
 
     }
 
-
+//////////mybitis数据库连接串serverTimezone=Asia/Shanghai，，，数据库设置set time_zone='+8:00';就没问题
     private String timeStamp2DateString(Timestamp timeStamp) {
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //fm.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -121,7 +121,7 @@ public class BaseMapperAspect {
 
     private String timeStamp2DateString(LocalDateTime localDateTime) {
 
-        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+0")).toEpochMilli());
+        Timestamp timeStamp = new Timestamp(localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli());
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return fm.format(timeStamp);
     }
