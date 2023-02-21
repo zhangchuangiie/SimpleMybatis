@@ -79,11 +79,11 @@ public class BaseMapperAspect {
     private String paramReplace(String param) {
 
         int mun = getKeyStringCount(param,"?");
-        System.out.println("mun = " + mun);
+        //System.out.println("mun = " + mun);
 
         for (int i = 0; i < mun; i++) {
             param = param.replaceFirst("\\?","#{args["+i+"]}");
-            System.out.println("param = " + param);
+            //System.out.println("param = " + param);
         }
         return param;
 
@@ -130,34 +130,10 @@ public class BaseMapperAspect {
 
         int n = 0;
         for (LinkedHashMap<String, Object> m : result) {
-            System.out.println("m = " + m);
-            if(m==null) continue;
-            for (String k : m.keySet()) {
-                System.out.println(k + " : " + m.get(k));
+            //System.out.println("m = " + m);
+            //if(m==null) continue;
 
-                if (m.get(k) != null) {
-                    System.out.println(m.get(k).getClass().getName());
-                }
-
-                if (m.get(k) != null && "java.sql.Timestamp".equals(m.get(k).getClass().getName())) {
-                    m.put(k, timeStamp2DateString((Timestamp) m.get(k)));
-                    n++;
-                }
-                if (m.get(k) != null && "java.sql.Date".equals(m.get(k).getClass().getName())) {
-                    m.put(k, m.get(k).toString());
-                    n++;
-                }
-                if (m.get(k) != null && "java.sql.Time".equals(m.get(k).getClass().getName())) {
-                    m.put(k, m.get(k).toString());
-                    n++;
-                }
-                if (m.get(k) != null && "java.time.LocalDateTime".equals(m.get(k).getClass().getName())) {
-
-                    m.put(k, timeStamp2DateString((LocalDateTime) m.get(k)));
-                    n++;
-                }
-
-            }
+            n+=formatTimeOfObjectMap(m);
 
         }
         return n;
