@@ -1,6 +1,9 @@
 # SimpleMybatis（Mybatis通用Mapper）
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
+![示意图](https://user-images.githubusercontent.com/40593174/227458541-7904246e-a51e-45c7-8ff3-c51c0c47594b.png)
+
+
 ## 典型示例：
 ```Java List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 1. 2,2",name,password,number,"time");
 
