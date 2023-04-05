@@ -1,6 +1,9 @@
 # SimpleMybatis（Mybatis通用Mapper）
 一个基于Mybatis封装的类JdbcTemplate风格的ORM工具，数据库开发效率神器
 
+现有的ORM框架使用起来都依赖配套的实体类和配置文件，对多表关联支持很不友好，对DDL和DCL语句支持极差，SimpleMybatis实现了一种极其简单高效的SQL<——>JSON映射模式，无需为具体库表建立实体类和Mapper，统一使用BaseMapper即可，采用弱类型返回结果集，这个返回值无需任何转换可以直接在SpringBoot的Controller里面做响应（一般也不需要Service），将controller、entity、mapper、service、resources简化为只要在controller接口里面直接写逻辑，每一组接口只要写一个java文件，对DDL，DCL也很好的支持，适合大量动态建表的业务，BaseMapper将数据库操作抽象为10种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作，对复杂的链表查询，聚合查询支持很好，无需任何配置和定义，直接可以执行复杂查询SQL语句，对存储过程支持友好，支持结果回传
+
+
 ![示意图](https://user-images.githubusercontent.com/40593174/227458541-7904246e-a51e-45c7-8ff3-c51c0c47594b.png)
 
 
@@ -25,10 +28,12 @@ int result=  baseMapper.execute("Truncate Table log");
 2. 采用弱类型返回结果集，这个返回值无需任何转换可以直接在SpringBoot的Controller里面做响应（一般也不需要Service）
 3. 将controller、entity、mapper、service、resources简化为只要在controller接口里面直接写逻辑，每一组接口只要写一个java文件
 4. 对DDL，DCL也很好的支持，适合大量动态建表的业务
-5. BaseMapper将数据库操作抽象为10种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作
-6. 正常直接使用BaseMapper（带BaseMapperAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
-7. 支持JDBC中?占位符，跟原生JDBC的SQL占位符写法习惯一致，实际的值通过后面的可变参数传递
-8. 在CRUDTask文件中可以查看调用示例
+5. 对复杂的链表查询，聚合查询支持很好，无需任何配置和定义，直接可以执行复杂查询SQL语句
+6. 对存储过程支持友好，支持结果回传
+7. BaseMapper将数据库操作抽象为10种，在JDBC语义和ORM语义间做了平衡，支持日常CRUD操作
+8. 正常直接使用BaseMapper（带BaseMapperAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
+9. 支持JDBC中?占位符，跟原生JDBC的SQL占位符写法习惯一致，实际的值通过后面的可变参数传递
+10. 在CRUDTask文件中可以查看调用示例
 
 ## 使用方式：
 1. **试用方式:** 只需要集成1个BaseMapper文件即可，集成和使用方式跟正常的Mapper相同（在不使用?占位符和不需要时间格式化的情况下，跟正常模式接口完全一样）
