@@ -89,8 +89,8 @@ public class BaseMapperAspect {
         param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
         param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
 
-        param=param.replaceAll("\\w[-\\w.+]*=null\\s*,?","");
-        param=param.replaceAll("\\w[-\\w.+]*='null'\\s*,?","");
+        param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
+        param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
 
         param=param.replaceAll(",\\s*where"," where");
 
