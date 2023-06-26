@@ -85,13 +85,12 @@ public class BaseMapperAspect {
             param = param.replaceFirst("\\?","#{args["+i+"]}");
             //System.out.println("param = " + param);
         }
-
+        //清洗查询SQL中的空条件
         param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
         param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
-
+        //清洗更新SQL中的空值
         param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
         param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
-
         param=param.replaceAll(",\\s*where"," where");
 
         return param;
