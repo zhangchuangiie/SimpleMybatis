@@ -102,7 +102,7 @@ public class APITemplate {
 
         if(pageNum == null) pageNum = 1;
         if(pageSize == null) pageSize = 10;
-        String sqlStr = "SELECT * FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
+        String sqlStr = "SELECT * FROM user where 1=1 and name='"+name+"' and password="+password+"' and number="+number+" ";
         if (orderColumn != null && orderDirection != null) {sqlStr += " ORDER BY "+ orderColumn + " " + orderDirection;} else {sqlStr += " ORDER BY id desc";}
         sqlStr += " LIMIT " + (pageNum-1)*pageSize + ","+pageSize;
         List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr);
