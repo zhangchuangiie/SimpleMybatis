@@ -8,6 +8,7 @@ import com.example.demo.util.*;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.jdbc.SQL;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,7 +36,7 @@ public class APITemplate {
         String currentDateString = TimeUtil.getCurrentDateString();
         String sql = "INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)";
         Map<String, Object> map = new HashMap<String, Object>();
-        int result = baseMapper.insertForID(sql,map,name,password,number,currentDateString);
+        int result = baseMapper.insertForID(sql,map,name,password,number,currentDateString,"ssss");
         System.out.println("id = " + map.get("id"));
         return new RespValue(0,"插入成功",map.get("id"));
     }
@@ -66,9 +67,10 @@ public class APITemplate {
                             @RequestParam(name="number",required = false)Integer number,
                             @RequestParam(name="password",required = false)String password){
 
-        String sqlStr = "update user set name='"+name+"',password='"+password+"',number="+number+" where id="+id;
+        //String sqlStr = "update user set name='"+name+"',password='"+password+"',number="+number+" where id="+id;
         //String sqlStr = "update user set name='"+name+"',password='"+password+"',number=NULL where id="+id;
-        int result = baseMapper.update(sqlStr);
+        String sqlStr = "update user set name=?,password=?,number=? where id="+id;
+        int result = baseMapper.update(sqlStr,name,password,number);
         return new RespValue(0,"修改成功",result);
     }
 
@@ -101,10 +103,10 @@ public class APITemplate {
 
 
 
-        String sqlStr = "SELECT * FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
+        String sqlStr = "SELECT * FROM user where 1=1 and name=? and password=? and number=? ";
         sqlStr = SQLBuilderUtil.pageAndOrderBuilder(sqlStr,orderColumn,orderDirection,pageNum,pageSize);
         //sqlStr = SQLBuilderUtil.nullFilterBuilder(sqlStr);
-        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr);
+        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,name,password,number);
         //System.out.println("result = " + JSON.toJSONString(result,true));
         return new RespValue(0,"",result);
     }
@@ -120,9 +122,10 @@ public class APITemplate {
                                 @RequestParam(name="number",required = false)Integer number,
                                 @RequestParam(name="password",required = false)String password){
 
-        String sqlStr = "SELECT count(*) FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
+       //String sqlStr = "SELECT count(*) FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
         //String sqlStr = "SELECT count(*) FROM user where 1=1 and name='"+name+"' and password is NULL and number="+number+" ";
-        long result =  baseMapper.count(sqlStr);
+        String sqlStr = "SELECT count(*)  FROM user where 1=1 and name=? and password=? and number=?";
+        long result =  baseMapper.count(sqlStr,name,password,number);
         return new RespValue(0,"",result);
     }
 

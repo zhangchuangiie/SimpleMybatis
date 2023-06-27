@@ -32,9 +32,14 @@ public class BaseMapperAspect {
 
         Object[] args = pjp.getArgs();
         Object o = args[0];
+
         if (o.getClass().getName().equals("java.lang.String")){
+            args = nullFinderBuilder(args);
+            o = args[0];
             String sql = (String) o;
+
             sql = nullFilterBuilder(sql);
+            System.out.println("sql = " + sql);
             sql = paramReplace(sql);
             args[0]= sql;
 
@@ -126,6 +131,34 @@ public class BaseMapperAspect {
         sqlStr=sqlStr.replaceAll(",\\s*where"," where");
         return sqlStr;
     }
+
+    private Object[] nullFinderBuilder(Object[] args) {
+        Object o = args[0];
+        String sql = (String) o;
+        Object[] argsP = (Object[]) args[1];
+        for(int i=0;i<argsP.length;i++){
+            if(argsP[i]==null){
+                sql = sql.replaceFirst("\\?","null");
+            }else{
+                sql = sql.replaceFirst("\\?","~=~=~=~");
+            }
+        }
+        int j=0;
+        for(int i=0;i<argsP.length;i++){
+            //System.out.println("i = " + i);
+            //System.out.println("argsP[i] = " + String.valueOf(argsP[i]));
+            if(argsP[i]!=null && j<i){
+                argsP[j] = argsP[i];
+                j++;
+                argsP[i] = null;
+            }else{
+            }
+        }
+        sql = sql.replaceAll("~=~=~=~","?");
+        args[0]= sql;
+        return args;
+    }
+
 
 //////////mybitis数据库连接串serverTimezone=Asia/Shanghai，，，数据库设置set time_zone='+8:00';就没问题
     private String timeStamp2DateString(Timestamp timeStamp) {
