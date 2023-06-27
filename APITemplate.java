@@ -69,8 +69,8 @@ public class APITemplate {
 
         //String sqlStr = "update user set name='"+name+"',password='"+password+"',number="+number+" where id="+id;
         //String sqlStr = "update user set name='"+name+"',password='"+password+"',number=NULL where id="+id;
-        String sqlStr = "update user set name=?,password=?,number=? where id="+id;
-        int result = baseMapper.update(sqlStr,name,password,number);
+        String sqlStr = "update user set name=?,password=?,number=? where id=?";
+        int result = baseMapper.update(sqlStr,name,password,number,id);
         return new RespValue(0,"修改成功",result);
     }
 
