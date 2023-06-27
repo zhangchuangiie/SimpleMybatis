@@ -10,10 +10,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 @Component
 @Aspect
@@ -136,26 +133,23 @@ public class BaseMapperAspect {
         Object o = args[0];
         String sql = (String) o;
         Object[] argsP = (Object[]) args[1];
+        int j=0;
         for(int i=0;i<argsP.length;i++){
             if(argsP[i]==null){
                 sql = sql.replaceFirst("\\?","null");
+                j++;
             }else{
                 sql = sql.replaceFirst("\\?","~=~=~=~");
             }
         }
-        int j=0;
-        for(int i=0;i<argsP.length;i++){
-            //System.out.println("i = " + i);
-            //System.out.println("argsP[i] = " + String.valueOf(argsP[i]));
-            if(argsP[i]!=null && j<i){
-                argsP[j] = argsP[i];
-                j++;
-                argsP[i] = null;
-            }else{
-            }
+        if(j>0){
+            //System.out.println("清洗空值" + j);
+            argsP = Arrays.stream(argsP).filter(x -> x != null).toArray();
         }
+        //System.out.println("sql = " + sql);
         sql = sql.replaceAll("~=~=~=~","?");
         args[0]= sql;
+        args[1]= argsP;
         return args;
     }
 
