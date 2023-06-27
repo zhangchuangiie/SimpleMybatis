@@ -100,13 +100,12 @@ public class APITemplate {
                                          @RequestParam(name = "pageSize", required = false)Integer pageSize){
 
 
-        if(pageNum == null) pageNum = 1;
-        if(pageSize == null) pageSize = 10;
-        String sqlStr = "SELECT * FROM user where 1=1 and name='"+name+"' and password="+password+"' and number="+number+" ";
-        if (orderColumn != null && orderDirection != null) {sqlStr += " ORDER BY "+ orderColumn + " " + orderDirection;} else {sqlStr += " ORDER BY id desc";}
-        sqlStr += " LIMIT " + (pageNum-1)*pageSize + ","+pageSize;
+
+        String sqlStr = "SELECT * FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
+        sqlStr = SQLBuilderUtil.pageAndOrderBuilder(sqlStr,orderColumn,orderDirection,pageNum,pageSize);
+        //sqlStr = SQLBuilderUtil.nullFilterBuilder(sqlStr);
         List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr);
-        System.out.println("result = " + JSON.toJSONString(result,true));
+        //System.out.println("result = " + JSON.toJSONString(result,true));
         return new RespValue(0,"",result);
     }
 

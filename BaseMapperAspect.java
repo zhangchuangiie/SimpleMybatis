@@ -34,6 +34,7 @@ public class BaseMapperAspect {
         Object o = args[0];
         if (o.getClass().getName().equals("java.lang.String")){
             String sql = (String) o;
+            sql = nullFilterBuilder(sql);
             sql = paramReplace(sql);
             args[0]= sql;
 
@@ -85,13 +86,7 @@ public class BaseMapperAspect {
             param = param.replaceFirst("\\?","#{args["+i+"]}");
             //System.out.println("param = " + param);
         }
-        //清洗查询SQL中的空条件
-        param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
-        param=param.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
-        //清洗更新SQL中的空值
-        param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
-        param=param.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
-        param=param.replaceAll(",\\s*where"," where");
+
 
         return param;
 
@@ -118,6 +113,18 @@ public class BaseMapperAspect {
 
         return paramList;
 
+    }
+
+    private String nullFilterBuilder(String sqlStr) {
+
+        //清洗查询SQL中的空条件
+        sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
+        sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
+        //清洗更新SQL中的空值
+        sqlStr=sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
+        sqlStr=sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
+        sqlStr=sqlStr.replaceAll(",\\s*where"," where");
+        return sqlStr;
     }
 
 //////////mybitis数据库连接串serverTimezone=Asia/Shanghai，，，数据库设置set time_zone='+8:00';就没问题
