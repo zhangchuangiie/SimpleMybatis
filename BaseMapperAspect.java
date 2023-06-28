@@ -34,7 +34,7 @@ public class BaseMapperAspect {
             args = nullFinderBuilder(args);
             o = args[0];
             String sql = (String) o;
-
+            System.out.println("sql = " + sql);
             sql = nullFilterBuilder(sql);
             System.out.println("sql = " + sql);
             sql = paramReplace(sql);
@@ -120,6 +120,7 @@ public class BaseMapperAspect {
     private String nullFilterBuilder(String sqlStr) {
 
         //清洗查询SQL中的空条件
+
         sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
         sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
         //清洗更新SQL中的空值
@@ -137,6 +138,10 @@ public class BaseMapperAspect {
         for(int i=0;i<argsP.length;i++){
             if(argsP[i]==null){
                 sql = sql.replaceFirst("\\?","null");
+                j++;
+            }else if("%null%".equals(argsP[i])){
+                sql = sql.replaceFirst("like\\s*\\?","=null");
+                argsP[i]=null;
                 j++;
             }else{
                 sql = sql.replaceFirst("\\?","~=~=~=~");

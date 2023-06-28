@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.commom.RespValue;
 import com.example.demo.mapper.BaseMapper;
+import com.example.demo.trigger.aspect.EmptyString;
 import com.example.demo.util.*;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -92,6 +93,7 @@ public class APITemplate {
             @ApiImplicitParam(name="pageNum",defaultValue="1"),
             @ApiImplicitParam(name="pageSize",defaultValue="10")
     })
+    @EmptyString("")
     @PostMapping(value="findListByCondition")
     public RespValue findListByCondition(@RequestParam(name="name",required = false)String name,
                                          @RequestParam(name="number",required = false)Integer number,
@@ -103,10 +105,11 @@ public class APITemplate {
 
 
 
-        String sqlStr = "SELECT * FROM user where 1=1 and name=? and password=? and number=? ";
+        //String sqlStr = "SELECT * FROM user where 1=1 and name like CONCAT('%',IFNULL(?,''),'%') and password=? and number=? ";
+        String sqlStr = "SELECT * FROM user where 1=1 and name like ? and password like ? and number=? ";
         sqlStr = SQLBuilderUtil.pageAndOrderBuilder(sqlStr,orderColumn,orderDirection,pageNum,pageSize);
         //sqlStr = SQLBuilderUtil.nullFilterBuilder(sqlStr);
-        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,name,password,number);
+        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,"%"+name+"%","%"+password+"%",number);    //"%"+name+"%"
         //System.out.println("result = " + JSON.toJSONString(result,true));
         return new RespValue(0,"",result);
     }
@@ -124,8 +127,8 @@ public class APITemplate {
 
        //String sqlStr = "SELECT count(*) FROM user where 1=1 and name='"+name+"' and password='"+password+"' and number="+number+" ";
         //String sqlStr = "SELECT count(*) FROM user where 1=1 and name='"+name+"' and password is NULL and number="+number+" ";
-        String sqlStr = "SELECT count(*)  FROM user where 1=1 and name=? and password=? and number=?";
-        long result =  baseMapper.count(sqlStr,name,password,number);
+        String sqlStr = "SELECT count(*)  FROM user where 1=1 and name like ? and password like ? and number=? ";
+        long result =  baseMapper.count(sqlStr,"%"+name+"%","%"+password+"%",number);
         return new RespValue(0,"",result);
     }
 

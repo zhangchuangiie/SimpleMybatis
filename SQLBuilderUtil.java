@@ -8,8 +8,17 @@ public class SQLBuilderUtil {
 
         if(pageNum == null) pageNum = 1;
         if(pageSize == null) pageSize = 10;
-        if (orderColumn != null && orderDirection != null) {sql += " ORDER BY "+ orderColumn + " " + orderDirection;} else {sql += " ORDER BY id desc";}
-        sql += " LIMIT " + (pageNum-1)*pageSize + ","+pageSize;
+        String sqlOrderStr = "";
+        if (orderColumn != null && orderDirection != null) {
+            sqlOrderStr = orderColumn + " " + orderDirection;
+        } else {
+            sqlOrderStr = "id desc";
+        }
+        if(sqlOrderStr.equals("id desc") || sqlOrderStr.equals("id asc")){
+        }else{
+            sqlOrderStr += ", id desc";
+        }
+        sql += " ORDER BY " + sqlOrderStr + " LIMIT " + (pageNum-1)*pageSize + ","+pageSize;
         return sql;
     }
 
