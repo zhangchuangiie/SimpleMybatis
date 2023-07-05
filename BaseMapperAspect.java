@@ -32,15 +32,20 @@ public class BaseMapperAspect {
         Object[] args = pjp.getArgs();
         Object o = args[0];
         if (o.getClass().getName().equals("java.lang.String")){
-            if(METHOD.equals("insertForID") || METHOD.equals("call")){
-                args = nullFinderBuilderInsertForID(args);
-            }else{
+//            if(METHOD.equals("insertForID") || METHOD.equals("call")){
+//                //args = nullFinderBuilderInsertForID(args);
+//            }else{
+//                args = nullFinderBuilder(args);
+//            }
+            if(METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")){
                 args = nullFinderBuilder(args);
             }
             o = args[0];
             String sql = (String) o;
             System.out.println("sql = " + sql);
-            sql = nullFilterBuilder(sql);
+            if(METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")){
+                sql = nullFilterBuilder(sql);
+            }
             System.out.println("sql = " + sql);
             sql = paramReplace(sql);
             args[0]= sql;
