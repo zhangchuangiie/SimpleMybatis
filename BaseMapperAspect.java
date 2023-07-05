@@ -23,15 +23,20 @@ public class BaseMapperAspect {
     //环绕增强，是在before前就会触发
     @Around("access()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        System.out.println("-aop 环绕阶段-" + new Date());
+        System.out.println("-aop BaseMapperAspect环绕阶段-" + new Date());
 
-        System.out.println("METHOD = " + pjp.getSignature().getName());
+
+        String METHOD = pjp.getSignature().getName();
+        System.out.println("METHOD = " + METHOD);
 
         Object[] args = pjp.getArgs();
         Object o = args[0];
-
         if (o.getClass().getName().equals("java.lang.String")){
-            args = nullFinderBuilder(args);
+            if(METHOD.equals("insertForID") || METHOD.equals("call")){
+                args = nullFinderBuilderInsertForID(args);
+            }else{
+                args = nullFinderBuilder(args);
+            }
             o = args[0];
             String sql = (String) o;
             System.out.println("sql = " + sql);
@@ -120,7 +125,6 @@ public class BaseMapperAspect {
     private String nullFilterBuilder(String sqlStr) {
 
         //清洗查询SQL中的空条件
-
         sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
         sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
         //清洗更新SQL中的空值
@@ -157,6 +161,35 @@ public class BaseMapperAspect {
         args[1]= argsP;
         return args;
     }
+
+    private Object[] nullFinderBuilderInsertForID(Object[] args) {
+        Object o = args[0];
+        String sql = (String) o;
+        Object[] argsP = (Object[]) args[2];
+        int j=0;
+        for(int i=0;i<argsP.length;i++){
+            if(argsP[i]==null){
+                sql = sql.replaceFirst("\\?","null");
+                j++;
+            }else if("%null%".equals(argsP[i])){
+                sql = sql.replaceFirst("like\\s*\\?","=null");
+                argsP[i]=null;
+                j++;
+            }else{
+                sql = sql.replaceFirst("\\?","~=~=~=~");
+            }
+        }
+        if(j>0){
+            //System.out.println("清洗空值" + j);
+            argsP = Arrays.stream(argsP).filter(x -> x != null).toArray();
+        }
+        //System.out.println("sql = " + sql);
+        sql = sql.replaceAll("~=~=~=~","?");
+        args[0]= sql;
+        args[2]= argsP;
+        return args;
+    }
+
 
 
 //////////mybitis数据库连接串serverTimezone=Asia/Shanghai，，，数据库设置set time_zone='+8:00';就没问题
