@@ -6,6 +6,8 @@
 
 ![示意图](https://user-images.githubusercontent.com/40593174/227458541-7904246e-a51e-45c7-8ff3-c51c0c47594b.png)
 
+![e7b36012f25e6bafcb6b7bf702aa95c](https://github.com/zhangchuangiie/SimpleMybatis/assets/40593174/9879c5b3-2bd0-4c0f-bc69-1a7aee4fa2ab)
+
 
 ## 典型示例：
 ```Java List<LinkedHashMap<String, Object>> resultList =  baseMapper.select("SELECT * FROM user where 1=1 and name=? and password=? and number=?  ORDER BY ? asc LIMIT 1. 2,2",name,password,number,"time");
