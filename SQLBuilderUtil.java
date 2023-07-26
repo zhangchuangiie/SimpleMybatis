@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import javax.servlet.http.HttpServletRequest;
 
 public class SQLBuilderUtil {
 
@@ -22,16 +23,19 @@ public class SQLBuilderUtil {
         return sql;
     }
 
-    public static String nullFilterBuilder(String sql) {
+    public static String pageAndOrderBuilder(String sql, HttpServletRequest request) {
 
-        //清洗查询SQL中的空条件
-        sql=sql.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
-        sql=sql.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
-        //清洗更新SQL中的空值
-        sql=sql.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
-        sql=sql.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
-        sql=sql.replaceAll(",\\s*where"," where");
-        return sql;
+        String orderColumn = request.getParameter("orderColumn");
+        String orderDirection = request.getParameter("orderDirection");
+
+        Integer pageNum = null;
+        if(request.getParameter("pageNum") !=null) pageNum = Integer.valueOf(request.getParameter("pageNum"));
+        Integer pageSize = null;
+        if(request.getParameter("pageSize") !=null) pageSize = Integer.valueOf(request.getParameter("pageSize"));
+
+        System.out.println("111pageNum = " + pageNum);
+        System.out.println("111pageSize = " + pageSize);
+        return pageAndOrderBuilder(sql,orderColumn,orderDirection,pageNum,pageSize);
     }
 
 
