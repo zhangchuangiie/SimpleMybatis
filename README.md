@@ -34,7 +34,7 @@ int result=  baseMapper.execute("Truncate Table log");
 8. 正常直接使用BaseMapper（带BaseMapperAspect装饰器）版本，另有一个单文件集成的原生JDBCUtil版本，两个版本接口的基本形式都是一样的
 9. 支持JDBC中?占位符，跟原生JDBC的SQL占位符写法习惯一致，实际的值通过后面的可变参数传递
 10. 在CRUDTask文件中可以查看调用示例
-11. APITemplate文件是典型的CRUD逻辑代码
+11. APITemplate文件是典型的CRUD接口逻辑代码，结合AutoValueFromSqlUtil可以实现接口参数的自动填充
 
 ## 使用方式：
 1. **试用方式:** 只需要集成1个BaseMapper文件即可，集成和使用方式跟正常的Mapper相同（在不使用?占位符和不需要时间格式化的情况下，跟正常模式接口完全一样）
