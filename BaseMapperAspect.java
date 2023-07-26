@@ -139,6 +139,7 @@ public class BaseMapperAspect {
         return sqlStr;
     }
 
+
     private Object[] nullFinderBuilder(Object[] args) {
         Object o = args[0];
         String sql = (String) o;
