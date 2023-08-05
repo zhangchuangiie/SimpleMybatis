@@ -37,16 +37,24 @@ public class BaseMapperAspect {
 //            }else{
 //                args = nullFinderBuilder(args);
 //            }
-            if(METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")){
-                args = nullFinderBuilder(args);
-            }
-            o = args[0];
             String sql = (String) o;
-            System.out.println("sql = " + sql);
-            if(METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")){
-                sql = nullFilterBuilder(sql);
+            if (METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")) {
+                String _sql = sql.replace("count(*)","*");
+                if (_sql.contains("(") || _sql.contains(")") || _sql.contains(" or ") || _sql.contains(" OR ") ||
+                        _sql.contains(" between ") || _sql.contains(" BETWEEN ") ||
+                        _sql.contains(" is ") || _sql.contains(" IS ") ||
+                        _sql.contains(" in ") || _sql.contains(" IN ")) {
+                    System.out.println("sql = " + sql);
+                    System.out.println("复杂SQL不进行空值过滤");
+                } else {
+                    args = nullFinderBuilder(args);
+                    //o = args[0];
+                    sql = (String) args[0];
+                    System.out.println("sql = " + sql);
+                    sql = nullFilterBuilder(METHOD, sql);
+                    System.out.println("sql = " + sql);
+                }
             }
-            System.out.println("sql = " + sql);
             sql = paramReplace(sql);
             args[0]= sql;
 
@@ -127,15 +135,19 @@ public class BaseMapperAspect {
 
     }
 
-    private String nullFilterBuilder(String sqlStr) {
-
-        //清洗查询SQL中的空条件
-        sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*null","");
-        sqlStr=sqlStr.replaceAll("\\s+and\\s+\\w[-\\w.+]*\\s*=\\s*'null'","");
-        //清洗更新SQL中的空值
-        sqlStr=sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?","");
-        sqlStr=sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?","");
-        sqlStr=sqlStr.replaceAll(",\\s*where"," where");
+    private String nullFilterBuilder(String METHOD,String sqlStr) {
+        if(METHOD.equals("select") || METHOD.equals("count")) {
+            //清洗查询SQL中的空条件
+            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*null\\s*", " ");
+            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*'null'\\s*", " ");
+            sqlStr = sqlStr.replaceAll("\\s+", " ");
+        }
+        if(METHOD.equals("update")) {
+            //清洗更新SQL中的空值
+            sqlStr = sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*null\\s*,?", "");
+            sqlStr = sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?", "");
+            sqlStr = sqlStr.replaceAll(",\\s*where", " where");
+        }
         return sqlStr;
     }
 
@@ -150,7 +162,7 @@ public class BaseMapperAspect {
                 sql = sql.replaceFirst("\\?","null");
                 j++;
             }else if("%null%".equals(argsP[i])){
-                sql = sql.replaceFirst("like\\s*\\?","=null");
+                sql = sql.replaceFirst("like\\s+\\?","=null");
                 argsP[i]=null;
                 j++;
             }else{

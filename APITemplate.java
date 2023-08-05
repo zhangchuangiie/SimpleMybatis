@@ -13,6 +13,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static com.example.demo.util.AutoValueFromSqlUtil.*;
+import static com.example.demo.util.SQLBuilderUtil.*;
+
+
 @Slf4j
 @RestController
 @RequestMapping(value="/user/",method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
@@ -25,41 +29,20 @@ public class APITemplate {
     public RespValue insert(@RequestParam("name")String name,
                             @RequestParam("number")Integer number,
                             @RequestParam("password")String password){
-        String currentDateString = TimeUtil.getCurrentDateString();
-        String sql = "INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)";
+        String sql = insertSQL("user","name,password,number,time");
         Map<String, Object> map = new HashMap<String, Object>();
-        int result = baseMapper.insertForID(sql,map,name,password,number,currentDateString);
-        System.out.println("id = " + map.get("id"));
+        int result = baseMapper.insertForID(sql,map,name,password,number,TimeUtil.getCurrentDateString());
         return new RespValue(0,"插入成功",map.get("id"));
     }
 
-    @PostMapping(value = "insert2")
-    public RespValue insert2(HttpServletRequest request) throws JSQLParserException {
-        String currentDateString = TimeUtil.getCurrentDateString();
-        String sql = "INSERT INTO user(name,password,number,time) VALUES(?,?,?,?)";
-        List<Object> args = AutoValueFromSqlUtil.insertValue(sql,request);
 
-        ///非原始值可以根据情况修改或者补充
-        //args.set(0,args.get(0)+"改");
-        args.add(currentDateString);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        int result = baseMapper.insertForID(sql,map,args.toArray());
-        System.out.println("id = " + map.get("id"));
-        return new RespValue(0,"插入成功",map.get("id"));
-    }
-
-    @PostMapping(value = "insert3")
-    public RespValue insert3(@RequestParam("name")String name,
-                            @RequestParam("number")Integer number,
-                            @RequestParam("password")String password){
-        String currentDateString = TimeUtil.getCurrentDateString();
-        String sql = "INSERT INTO user(name,password,number,time) " +
-                " VALUES(#{args[0]},#{args[1]},#{args[2]},#{args[3]})";
-        Map<String, Object> map = new HashMap<String, Object>();
-        int result = baseMapper.insertForID(sql,map,name,password,number,currentDateString);
-        System.out.println("id = " + map.get("id"));
-        return new RespValue(0,"插入成功",map.get("id"));
+    @PostMapping(value = "insert1")
+    public RespValue insert1(HttpServletRequest request) throws JSQLParserException {
+        String sql = insertSQL("user","name,password,number,time");
+        List<Object> args = insertValue(sql,request);
+        args.add(TimeUtil.getCurrentDateString());
+        int result = baseMapper.insert(sql,args.toArray());
+        return new RespValue(0,"插入成功",result);
     }
 
 
@@ -78,10 +61,9 @@ public class APITemplate {
         return new RespValue(0, result);
     }
 
-
     @PostMapping(value="delete")
     public RespValue delete(@RequestParam("id") Integer id){
-        int result = baseMapper.delete("delete from user where id=?",id);
+        int result = baseMapper.delete(deleteSQL("user"),id);
         return new RespValue(0,"删除成功",result);
     }
 
@@ -92,23 +74,21 @@ public class APITemplate {
         return new RespValue(0,"删除成功",result);
     }
 
+
     @PostMapping(value = "update")
     public RespValue update(@RequestParam("id") Integer id,
                             @RequestParam(name="name",required = false)String name,
                             @RequestParam(name="number",required = false)Integer number,
                             @RequestParam(name="password",required = false)String password){
-        String sqlStr = "update user set name=?,password=?,number=? where id=?";
+        String sqlStr = updateSQL("user","name,password,number");
         int result = baseMapper.update(sqlStr,name,password,number,id);
         return new RespValue(0,"修改成功",result);
     }
 
-    @PostMapping(value = "update2")
-    public RespValue update2(HttpServletRequest request) throws JSQLParserException {
-        String sqlStr = "update user set name=?,password=?,number=? where id=?";
-        List<Object> args = AutoValueFromSqlUtil.updateValue(sqlStr,request);
-        RequestValue r = new RequestValue(request);
-        args.add(r.i("id"));
-        System.out.println("args = " + args);
+    @PostMapping(value = "update1")
+    public RespValue update1(HttpServletRequest request) throws JSQLParserException {
+        String sqlStr = updateSQL("user","name,password,number");
+        List<Object> args = updateValueById(sqlStr,request);
         int result = baseMapper.update(sqlStr,args.toArray());
         return new RespValue(0,"修改成功",result);
     }
@@ -116,22 +96,10 @@ public class APITemplate {
 
     @PostMapping(value = "findObjectById")
     public RespValue findObjectById(@RequestParam("id") Integer id){
-        LinkedHashMap<String, Object> result =  baseMapper.get("SELECT * FROM user where  id=?",id);
+        LinkedHashMap<String, Object> result =  baseMapper.get(getSQL("user"),id);
         return new RespValue(0,"",result);
     }
 
-
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="name",defaultValue="王五"),
-            @ApiImplicitParam(name="number",defaultValue="70"),
-            @ApiImplicitParam(name="password",defaultValue="sssss"),
-            @ApiImplicitParam(name="orderColumn",defaultValue="time"),
-            @ApiImplicitParam(name="orderDirection",defaultValue="asc"),
-            @ApiImplicitParam(name="pageNum",defaultValue="1"),
-            @ApiImplicitParam(name="pageSize",defaultValue="10")
-    })
-    //@EmptyString("")
-    //@EmptyAlert("")
     @PostMapping(value="findListByCondition")
     public RespValue findListByCondition(@RequestParam(name="name",required = false)String name,
                                          @RequestParam(name="number",required = false)Integer number,
@@ -141,8 +109,7 @@ public class APITemplate {
                                          @RequestParam(name = "pageNum", required = false) Integer pageNum,
                                          @RequestParam(name = "pageSize", required = false)Integer pageSize){
 
-        //String sqlStr = "SELECT * FROM user where 1=1 and name like CONCAT('%',IFNULL(?,''),'%') and password=? and number=? ";
-        String sqlStr = "SELECT * FROM user where 1=1 and name like ? and password like ? and number=? ";
+        String sqlStr = showSQL("user","name like ? and password like ? and number=?");
         sqlStr = SQLBuilderUtil.pageAndOrderBuilder(sqlStr,orderColumn,orderDirection,pageNum,pageSize);
         List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,"%"+name+"%","%"+password+"%",number);    //"%"+name+"%"
         //System.out.println("result = " + JSON.toJSONString(result,true));
@@ -150,18 +117,14 @@ public class APITemplate {
     }
 
 
-    @PostMapping(value = "findListByCondition2")
-    public RespValue findListByCondition2(HttpServletRequest request) throws JSQLParserException {
-        RequestValue r = new RequestValue(request);
-        //String sqlStr = "SELECT * FROM user where 1=1 and name like ? and password like ? and number=? and id > ?";
-        String sqlStr = "SELECT * FROM user where 1=1 and name = ? and password = ? and number=? and id = 60077";
+    @PostMapping(value = "findListByCondition1")
+    public RespValue findListByCondition1(HttpServletRequest request) throws JSQLParserException {
+        String sqlStr = showSQL("user","name = '王五' and name like ? and password like ? and number =?");
         sqlStr = SQLBuilderUtil.pageAndOrderBuilder(sqlStr,request);
-        List<Object> args = AutoValueFromSqlUtil.selectValue(sqlStr,request);
+        List<Object> args = selectValue(sqlStr,request);
+        //args.add(null);
         System.out.println("args = " + args);
-        //args.add(1000);
-        args.remove(3);
-        System.out.println("args = " + args);
-        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,args.toArray());  //"%"+name+"%"
+        List<LinkedHashMap<String, Object>> result =  baseMapper.select(sqlStr,args.toArray());
         return new RespValue(0,"",result);
     }
 
@@ -170,20 +133,19 @@ public class APITemplate {
     public RespValue countByCondition(@RequestParam(name="name",required = false)String name,
                                 @RequestParam(name="number",required = false)Integer number,
                                 @RequestParam(name="password",required = false)String password){
-        String sqlStr = "SELECT count(*)  FROM user where 1=1 and name like ? and password like ? and number=? ";
+        String sqlStr = countSQL("user","name like ? and password like ? and number=?");
         long result =  baseMapper.count(sqlStr,"%"+name+"%","%"+password+"%",number);
         return new RespValue(0,"",result);
     }
 
-    @GetMapping("/countByCondition2")
-    public RespValue countByCondition2(HttpServletRequest request) throws JSQLParserException {
-        String sqlStr = "SELECT count(*)  FROM user where 1=1 and name like ? and password like ? and number=? ";
-        List<Object> args = AutoValueFromSqlUtil.selectValue(sqlStr,request);
+
+    @GetMapping("/countByCondition1")
+    public RespValue countByCondition1(HttpServletRequest request) throws JSQLParserException {
+        String sqlStr = countSQL("user","name like ? and password like ? and number=?");
+        List<Object> args = selectValue(sqlStr,request);
         long result =  baseMapper.count(sqlStr,args.toArray());
         return new RespValue(0,"",result);
     }
-
-
 
 }
 

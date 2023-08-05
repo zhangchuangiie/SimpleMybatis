@@ -74,6 +74,26 @@ public class AutoValueFromSqlUtil {
         return args;
     }
 
+    public static List<Object> updateValueById(String sql, HttpServletRequest request) throws JSQLParserException {
+        RequestValue r = new RequestValue(request);
+        List<Object> args = new ArrayList<Object>();
+        Update update = (Update) CCJSqlParserUtil.parse(sql);
+        System.out.println("更惨的表" + update.getTable());
+        for (UpdateSet updateSet : update.getUpdateSets()) {
+            updateSet.getColumns().forEach(System.out::println);
+            updateSet.getColumns().forEach(column -> args.add(r.o(column.getColumnName())));
+        }
+        args.add(r.i("id"));
+        return args;
+    }
+
+    public static int idValue(HttpServletRequest request) throws JSQLParserException {
+        RequestValue r = new RequestValue(request);
+
+        return r.i("id");
+    }
+
+    ///复杂条件不填充值，支持函数后手工按位置填充,,,也可以直接都用手工传值
     public static List<Object> selectValue(String sql, HttpServletRequest request) throws JSQLParserException {
         RequestValue r = new RequestValue(request);
         List<Object> args = new ArrayList<Object>();
@@ -92,19 +112,30 @@ public class AutoValueFromSqlUtil {
         String[] split = andExpression.toString().split(" AND ");
         for (String s : split) {
             System.out.println("s : " + s);
-            if (s.contains(" = ")){
-                String column=s.split(" = ")[0].trim();
-                System.out.println("column = " + column);
-                if(column.equals("1")) continue;
-                args.add(r.o(column));
-            } else if (s.contains(" LIKE ")) {
-                String column=s.split(" LIKE ")[0].trim();
-                System.out.println("column = " + column);
-                args.add("%"+r.s(column)+"%");
+//            System.out.println("s.trim().split(\"\\\\s*\").length = " + s.trim().split("\\s+").length);
+//            for (String s1 : s.trim().split("\\s+")) {
+//                System.out.println("s1 = " + s1);
+//            }
+            if(s.trim().split("\\s+").length>3)  continue;
+            if (s.contains("?")){
+                if (s.contains(" = ")){
+                    String column=s.trim().split(" = ")[0].trim();
+                    System.out.println("column = " + column);
+                    if(column.equals("1")) continue;
+                    args.add(r.o(column));
+                } else if (s.contains(" LIKE ")) {
+                    String column=s.trim().split(" LIKE ")[0].trim();
+                    System.out.println("column = " + column);
+                    args.add("%"+r.s(column)+"%");
+                }else{
+                    System.out.println("复杂表达式，跳过填充 = " + s);
+                    continue;
+                }
             }else{
-                System.out.println("跳过 = " + s);
+                System.out.println("无占位符，跳过填充 = " + s);
                 continue;
             }
+
         }
         return args;
     }
