@@ -66,8 +66,14 @@ public class BaseMapperAspect {
         }
 
         Object result = pjp.proceed(args);
-
-        if(result == null){return Integer.valueOf(0);}
+        System.out.println("result = " + result);
+        if(result == null){
+            if(METHOD.equals("get")) {
+                return new LinkedHashMap<String,Object>();
+            }else if(METHOD.equals("count")){
+                return Long.valueOf(0);
+            }
+        }
 
         System.out.println("result.getClass().getName() = " + result.getClass().getName());
 
