@@ -54,7 +54,7 @@ public class AutoValueFromSqlUtil {
 //        for (int i = 0; i < columns.size(); i++) {
 //            args.add(r.s(columns.get(i).getColumnName()));
 //        }
-        columns.forEach(column -> args.add(r.o(column.getColumnName())));
+        columns.forEach(column -> args.add(r.getObject(column.getColumnName())));
         return args;
     }
 
@@ -69,7 +69,7 @@ public class AutoValueFromSqlUtil {
 ////        for (int i = 0; i < columns.size(); i++) {
 ////            args.add(r.s(columns.get(i).getColumnName()));
 ////        }
-//        //columns.forEach(column -> args.add(r.o(column.getColumnName())));
+//        //columns.forEach(column -> args.add(r.getObject(column.getColumnName())));
 //
 //
 //        for (int i = 0; i < columns.size(); i++) {
@@ -89,7 +89,7 @@ public class AutoValueFromSqlUtil {
         System.out.println("更惨的表" + update.getTable());
         for (UpdateSet updateSet : update.getUpdateSets()) {
             updateSet.getColumns().forEach(System.out::println);
-            updateSet.getColumns().forEach(column -> args.add(r.o(column.getColumnName())));
+            updateSet.getColumns().forEach(column -> args.add(r.getObject(column.getColumnName())));
         }
         return args;
     }
@@ -101,18 +101,16 @@ public class AutoValueFromSqlUtil {
         System.out.println("更惨的表" + update.getTable());
         for (UpdateSet updateSet : update.getUpdateSets()) {
             updateSet.getColumns().forEach(System.out::println);
-            updateSet.getColumns().forEach(column -> args.add(r.o(column.getColumnName())));
+            updateSet.getColumns().forEach(column -> args.add(r.getObject(column.getColumnName())));
         }
-        args.add(r.i("id"));
+        args.add(r.getLong("id"));
         return args;
     }
 
-    public static int idValue(HttpServletRequest request) throws JSQLParserException {
+    public static long idValue(HttpServletRequest request) throws JSQLParserException {
         RequestValue r = new RequestValue(request);
-        return r.i("id");
+        return r.getLong("id");
     }
-
-
 
     public static List<Object> selectValue(String sql, HttpServletRequest request) throws ParseException {
         RequestValue r = new RequestValue(request);
@@ -135,8 +133,6 @@ public class AutoValueFromSqlUtil {
         return args;
     }
 
-
-
     public static List<Object> fillValueByName(HttpServletRequest request,String ...names) {
         RequestValue r = new RequestValue(request);
         List<Object> args = new ArrayList<Object>();
@@ -154,18 +150,22 @@ public class AutoValueFromSqlUtil {
                 type = "String";
             }
 
-
             if(type.equals("Integer")){
-                args.add(r.integer(name));
+                args.add(r.getInteger(name));
             } else if (type.equals("Long")) {
-                args.add(r.aLong(name));
+                args.add(r.getLong(name));
+            }else if (type.equals("Short")) {
+                args.add(r.getShort(name));
+            }else if (type.equals("Float")) {
+                args.add(r.getFloat(name));
+            }else if (type.equals("Double")) {
+                args.add(r.getDouble(name));
             }else if (type.equals("String")) {
-                args.add(r.string(name));
+                args.add(r.getString(name));
             }else{
-                args.add(r.string(name));
+                args.add(r.getString(name));
             }
         }
-
         System.out.printf("Handle columns--> %s\n", Arrays.toString(names));
         System.out.printf("Fill args--> %s\n",args.toString());
         //System.out.printf("Args type--> %s\n",argsType.toString());
@@ -228,8 +228,8 @@ public class AutoValueFromSqlUtil {
                     {
                         //args.add(value0.toString());
                         columnList.add(value0);
-                        System.out.println("Handle column = " + value0 + ", fill value = " + r.o(value0));
-                        args.add(r.o(value0));
+                        System.out.println("Handle column = " + value0 + ", fill value = " + r.getObject(value0));
+                        args.add(r.getObject(value0));
                     }
                     System.out.printf("3.1. CONDITION-COLUMN:%s\n",value0 );
                     System.out.printf("3.2. CONDITION-OPERATOR:%s\n",value1 );
@@ -254,8 +254,8 @@ public class AutoValueFromSqlUtil {
                     {
                         //args.add(value0.toString());
                         columnList.add(value0);
-                        System.out.println("Handle column = " + value0 + ", fill value = " + "%"+r.s(value0)+"%");
-                        args.add("%"+r.s(value0)+"%");
+                        System.out.println("Handle column = " + value0 + ", fill value = " + "%"+r.getString(value0)+"%");
+                        args.add("%"+r.getString(value0)+"%");
                     }
                     System.out.printf("4.1.LIKE CONDITION-COLUMN:%s\n",value0 );
                     System.out.printf("4.2.LIKE CONDITION-OPERATOR:%s\n",value1 );
@@ -362,7 +362,7 @@ public class AutoValueFromSqlUtil {
 //                    String column=s.trim().split(" = ")[0].trim();
 //                    System.out.println("column = " + column);
 //                    if(column.equals("1")) continue;
-//                    args.add(r.o(column));
+//                    args.add(r.getObject(column));
 //                } else if (s.contains(" LIKE ")) {
 //                    String column=s.trim().split(" LIKE ")[0].trim();
 //                    System.out.println("column = " + column);

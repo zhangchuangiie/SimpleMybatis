@@ -21,33 +21,36 @@ public class RequestValue {
     }
 
 
-    public String string(String s){
+    public String getString(String s){
         if(this.request.getParameter(s)==null) return null;
         return this.request.getParameter(s);
     }
-    public Integer integer(String s){
+    public Integer getInteger(String s){
         if(this.request.getParameter(s)==null) return null;
         return Integer.valueOf(this.request.getParameter(s));
     }
-    public Long aLong(String s){
-        if(this.request.getParameter(s)==null) return null;
-        return Long.valueOf(this.request.getParameter(s));
-    }
-    public String s(String s){
-        if(this.request.getParameter(s)==null) return null;
-        return this.request.getParameter(s);
-    }
-    public Integer i(String s){
-        if(this.request.getParameter(s)==null) return null;
-        return Integer.valueOf(this.request.getParameter(s));
-    }
-    public Long l(String s){
+    public Long getLong(String s){
         if(this.request.getParameter(s)==null) return null;
         return Long.valueOf(this.request.getParameter(s));
     }
 
+    public Short getShort(String s){
+        if(this.request.getParameter(s)==null) return null;
+        return Short.valueOf(this.request.getParameter(s));
+    }
 
-    public Object object(String s){
+    public Float getFloat(String s){
+        if(this.request.getParameter(s)==null) return null;
+        return Float.valueOf(this.request.getParameter(s));
+    }
+
+    public Double getDouble(String s){
+        if(this.request.getParameter(s)==null) return null;
+        return Double.valueOf(this.request.getParameter(s));
+    }
+
+
+    public Object getObject(String s){
         Object o = this.request.getParameter(s);
         if(o==null) return null;
         if(isInteger(o.toString())){
@@ -56,7 +59,4 @@ public class RequestValue {
         return o;
     }
 
-    public Object o(String s){
-        return object(s);
-    }
 }
