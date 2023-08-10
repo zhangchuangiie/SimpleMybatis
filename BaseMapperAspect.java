@@ -40,10 +40,15 @@ public class BaseMapperAspect {
             String sql = (String) o;
             if (METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")) {
                 String _sql = sql.replace("count(*)","*");
-                if (_sql.contains("(") || _sql.contains(")") || _sql.contains(" or ") || _sql.contains(" OR ") ||
-                        _sql.contains(" between ") || _sql.contains(" BETWEEN ") ||
-                        _sql.contains(" is ") || _sql.contains(" IS ") ||
-                        _sql.contains(" in ") || _sql.contains(" IN ")) {
+//                if (_sql.contains("(") || _sql.contains(")") || _sql.contains(" or ") || _sql.contains(" OR ") ||
+//                        _sql.contains(" between ") || _sql.contains(" BETWEEN ") ||
+//                        _sql.contains(" is ") || _sql.contains(" IS ") ||
+//                        _sql.contains(" in ") || _sql.contains(" IN ")) {
+//                    System.out.println("sql = " + sql);
+//                    System.out.println("复杂SQL不进行空值过滤");
+//                }
+//
+                if (1==2) {
                     System.out.println("sql = " + sql);
                     System.out.println("复杂SQL不进行空值过滤");
                 } else {
@@ -144,9 +149,15 @@ public class BaseMapperAspect {
     private String nullFilterBuilder(String METHOD,String sqlStr) {
         if(METHOD.equals("select") || METHOD.equals("count")) {
             //清洗查询SQL中的空条件
-            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*null\\s*", " ");
-            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*'null'\\s*", " ");
+
+            //sqlStr = sqlStr.replaceAll("\\s+\\)", ")");
+            sqlStr = sqlStr + " ";
+
+            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*null\\s+(?!\\))", " ");
+            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*(=|>|<|>=|<=|<>|!=)\\s*'null'\\s+(?!\\))", " ");
+            sqlStr = sqlStr.replaceAll("\\s*and\\s+\\w[-\\w.+]*\\s*like\\s*'%null%'\\s+(?!\\))", " ");
             sqlStr = sqlStr.replaceAll("\\s+", " ");
+            sqlStr = sqlStr.trim();
         }
         if(METHOD.equals("update")) {
             //清洗更新SQL中的空值
