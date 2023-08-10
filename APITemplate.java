@@ -74,6 +74,13 @@ public class APITemplate {
         return new RespValue(0,"删除成功",result);
     }
 
+    @PostMapping(value="delete1")
+    public RespValue delete1(HttpServletRequest request) throws JSQLParserException {
+        int result = baseMapper.delete(deleteSQL("user"),idValue(request));
+        //int result = baseMapper.delete(deleteSQL("user"),fillValueByName(request,"Integer id").toArray());
+        return new RespValue(0,"删除成功",result);
+    }
+
     @PostMapping(value="deletes")
     public RespValue deletes(@RequestParam(name="ids")String ids){
 
