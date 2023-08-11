@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.demo.util.SQLBuilderUtil.typeColumns;
+
 public class AutoValueFromSqlUtil {
 
     private static Pattern pattern = Pattern.compile("^\\w[-\\w.+]*$");
@@ -107,7 +109,7 @@ public class AutoValueFromSqlUtil {
         return args;
     }
 
-    public static long idValue(HttpServletRequest request) throws JSQLParserException {
+    public static long idValue(HttpServletRequest request) {
         RequestValue r = new RequestValue(request);
         return r.getLong("id");
     }
@@ -169,6 +171,27 @@ public class AutoValueFromSqlUtil {
         System.out.printf("Handle columns--> %s\n", Arrays.toString(names));
         System.out.printf("Fill args--> %s\n",args.toString());
         //System.out.printf("Args type--> %s\n",argsType.toString());
+        return args;
+    }
+
+
+    public static List<Object> fillValueByNameString(HttpServletRequest request,String namesString) {
+
+        String[] names = namesString.split("\\,");
+        List<Object> args = fillValueByName(request,names);
+        return args;
+    }
+
+    public static List<Object> fillValueByTableForInsert(HttpServletRequest request,String table) {
+        String namesString = typeColumns(table);
+        List<Object> args = fillValueByNameString(request,namesString);
+        return args;
+    }
+
+    public static List<Object> fillValueByTableForUpdate(HttpServletRequest request,String table) {
+        String namesString = typeColumns(table);
+        namesString = namesString + ",Long id";
+        List<Object> args = fillValueByNameString(request,namesString);
         return args;
     }
 

@@ -39,14 +39,13 @@ public class APITemplate {
 
     @PostMapping(value = "insert1")
     public RespValue insert1(HttpServletRequest request) throws JSQLParserException {
-        String sql = insertSQL("user","name,password,number,time");
+        //String sql = insertSQL("user","name,password,number,time");
+        String sql = insertSQL("user");
+        //List<Object> args = insertValue(sql,request);
+        //List<Object> args = fillValueByNameString(request,"name,password,Integer number");
+        List<Object> args = fillValueByTableForInsert(request,"user");
 
-        long start = System.currentTimeMillis();   //获取开始时间
-        List<Object> args = insertValue(sql,request);
-        long end = System.currentTimeMillis(); //获取结束时间
-        System.out.println("程序运行时间： " + (end - start) + "ms");
-
-        args.add(TimeUtil.getCurrentDateString());
+        args.set(3,TimeUtil.getCurrentDateString());
         int result = baseMapper.insert(sql,args.toArray());
         return new RespValue(0,"插入成功",result);
     }
@@ -74,7 +73,7 @@ public class APITemplate {
     }
 
     @PostMapping(value="delete1")
-    public RespValue delete1(HttpServletRequest request) throws JSQLParserException {
+    public RespValue delete1(HttpServletRequest request) {
         int result = baseMapper.delete(deleteSQL("user"),idValue(request));
         //int result = baseMapper.delete(deleteSQL("user"),fillValueByName(request,"Integer id").toArray());
         return new RespValue(0,"删除成功",result);
@@ -100,11 +99,11 @@ public class APITemplate {
 
     @PostMapping(value = "update1")
     public RespValue update1(HttpServletRequest request) throws JSQLParserException {
-        String sqlStr = updateSQL("user","name,password,number");
-        long start = System.currentTimeMillis();   //获取开始时间
-        List<Object> args = updateValueById(sqlStr,request);
-        long end = System.currentTimeMillis(); //获取结束时间
-        System.out.println("程序运行时间： " + (end - start) + "ms");
+        //String sqlStr = updateSQL("user","name,password,number");
+        String sqlStr = updateSQL("user");
+        //List<Object> args = updateValueById(sqlStr,request);
+        //List<Object> args = fillValueByNameString(request,"name,password,Integer number,Long id");
+        List<Object> args = fillValueByTableForUpdate(request,"user");
         int result = baseMapper.update(sqlStr,args.toArray());
         return new RespValue(0,"修改成功",result);
     }
@@ -113,6 +112,12 @@ public class APITemplate {
     @PostMapping(value = "findObjectById")
     public RespValue findObjectById(@RequestParam("id") Integer id){
         LinkedHashMap<String, Object> result =  baseMapper.get(getSQL("user"),id);
+        return new RespValue(0,"",result);
+    }
+
+    @PostMapping(value = "findObjectById1")
+    public RespValue findObjectById1(HttpServletRequest request) {
+        LinkedHashMap<String, Object> result =  baseMapper.get(getSQL("user"),idValue(request));
         return new RespValue(0,"",result);
     }
 
