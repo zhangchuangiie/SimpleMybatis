@@ -54,7 +54,12 @@ public class BaseMapperAspect {
                     System.out.println("sql = " + sql);
                     System.out.println("复杂SQL不进行空值过滤");
                 } else {
-                    args = nullFinderBuilder(args);
+                    //args = nullFinderBuilder(args);
+                    if (METHOD.equals("insertForID")) {
+                        args = nullFinderBuilderInsertForID(args);
+                    } else {
+                        args = nullFinderBuilder(args);
+                    }
                     //o = args[0];
                     sql = (String) args[0];
                     System.out.println("sql = " + sql);
