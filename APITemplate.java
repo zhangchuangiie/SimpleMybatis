@@ -27,9 +27,7 @@ public class APITemplate {
     private BaseMapper baseMapper;
 
     @PostMapping(value = "insert")
-    public RespValue insert(@RequestParam("name")String name,
-                            @RequestParam("number")Integer number,
-                            @RequestParam("password")String password){
+    public RespValue insert(String name,Integer number,String password){
         String sql = insertSQL("user","name,password,number,time");
         Map<String, Object> map = new HashMap<String, Object>();
         int result = baseMapper.insertForID(sql,map,name,password,number,TimeUtil.getCurrentDateString());
@@ -67,7 +65,7 @@ public class APITemplate {
     }
 
     @PostMapping(value="delete")
-    public RespValue delete(@RequestParam("id") Integer id){
+    public RespValue delete(Integer id){
         int result = baseMapper.delete(deleteSQL("user"),id);
         return new RespValue(0,"删除成功",result);
     }
@@ -80,7 +78,7 @@ public class APITemplate {
     }
 
     @PostMapping(value="deletes")
-    public RespValue deletes(@RequestParam(name="ids")String ids){
+    public RespValue deletes(String ids){
 
         int result = baseMapper.delete("delete from user where id in ("+ids+")");
         return new RespValue(0,"删除成功",result);
@@ -88,10 +86,7 @@ public class APITemplate {
 
 
     @PostMapping(value = "update")
-    public RespValue update(@RequestParam("id") Integer id,
-                            @RequestParam(name="name",required = false)String name,
-                            @RequestParam(name="number",required = false)Integer number,
-                            @RequestParam(name="password",required = false)String password){
+    public RespValue update(Integer id,String name,Integer number,String password){
         String sqlStr = updateSQL("user","name,password,number");
         int result = baseMapper.update(sqlStr,name,password,number,id);
         return new RespValue(0,"修改成功",result);
@@ -110,7 +105,7 @@ public class APITemplate {
 
 
     @PostMapping(value = "findObjectById")
-    public RespValue findObjectById(@RequestParam("id") Integer id){
+    public RespValue findObjectById(Integer id){
         LinkedHashMap<String, Object> result =  baseMapper.get(getSQL("user"),id);
         return new RespValue(0,"",result);
     }
@@ -122,13 +117,8 @@ public class APITemplate {
     }
 
     @PostMapping(value="findListByCondition")
-    public RespValue findListByCondition(@RequestParam(name="name",required = false)String name,
-                                         @RequestParam(name="number",required = false)Integer number,
-                                         @RequestParam(name="password",required = false)String password,
-                                         @RequestParam(name="orderColumn",required = false)String orderColumn,
-                                         @RequestParam(name="orderDirection",required = false)String orderDirection,
-                                         @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                                         @RequestParam(name = "pageSize", required = false)Integer pageSize){
+    public RespValue findListByCondition(String name,Integer number,String password,
+                                         String orderColumn,String orderDirection,Integer pageNum,Integer pageSize){
 
         String sqlStr = showSQL("user","name like ? and password like ? and number=?");
         sqlStr = pageAndOrderBuilder(sqlStr,orderColumn,orderDirection,pageNum,pageSize);
@@ -159,9 +149,7 @@ public class APITemplate {
 
 
     @GetMapping("/countByCondition")
-    public RespValue countByCondition(@RequestParam(name="name",required = false)String name,
-                                @RequestParam(name="number",required = false)Integer number,
-                                @RequestParam(name="password",required = false)String password){
+    public RespValue countByCondition(String name,Integer number,String password){
         String sqlStr = countSQL("user","name like ? and password like ? and number=?");
         long result =  baseMapper.count(sqlStr,"%"+name+"%","%"+password+"%",number);
         return new RespValue(0,"",result);
