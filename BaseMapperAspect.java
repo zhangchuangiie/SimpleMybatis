@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Aspect
@@ -38,7 +40,7 @@ public class BaseMapperAspect {
 //                args = nullFinderBuilder(args);
 //            }
             String sql = (String) o;
-            if (METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update")) {
+            if (METHOD.equals("select") || METHOD.equals("count") || METHOD.equals("update") || METHOD.equals("insert") || METHOD.equals("insertForID")) {
                 String _sql = sql.replace("count(*)","*");
 //                if (_sql.contains("(") || _sql.contains(")") || _sql.contains(" or ") || _sql.contains(" OR ") ||
 //                        _sql.contains(" between ") || _sql.contains(" BETWEEN ") ||
@@ -165,6 +167,15 @@ public class BaseMapperAspect {
             sqlStr = sqlStr.replaceAll("\\w[-\\w.+]*\\s*=\\s*'null'\\s*,?", "");
             sqlStr = sqlStr.replaceAll(",\\s*where", " where");
         }
+        if(METHOD.equals("insert") || METHOD.equals("insertForID")) {
+            //清洗插入SQL中的空值
+           // System.out.println("1111METHOD = " + METHOD);
+            //System.out.println("sqlStr = " + sqlStr);
+            sqlStr = nullFilterForInsert(sqlStr);
+            //System.out.println("sqlStr = " + sqlStr);
+        }
+
+
         return sqlStr;
     }
 
@@ -286,6 +297,29 @@ public class BaseMapperAspect {
     }
 
 
+    public String nullFilterForInsert(String str) {
+        String[] list1= str.split("\\)\\,\\s*\\(");
+        String[] list2= str.split("\\)\\s+(values|VALUES)");
+        if(!(list1.length ==1 && list2.length==2)){return str;}
 
+        String[] strOldList = str.trim().split("[(|)]",-1);
+        if(strOldList.length!=5){return str;}
+
+        String[] columnList = strOldList[1].trim().split("\\s*\\,\\s*");
+        String[] valuesList = strOldList[3].trim().split("\\s*\\,\\s*");
+        if(columnList.length != valuesList.length){return str;}
+        String columnsNew = "";
+        String valuesNew = "";
+        for (int i = 0; i < columnList.length; i++) {
+            if(!valuesList[i].equals("null")){
+                columnsNew+=columnList[i]+",";
+                valuesNew+=valuesList[i]+",";
+            }
+        }
+        columnsNew = columnsNew.substring(0, columnsNew.length() - 1);
+        valuesNew = valuesNew.substring(0, valuesNew.length() - 1);
+        String reStr = strOldList[0] + "("+columnsNew+") "+strOldList[2]+"("+valuesNew+")";
+        return reStr;
+    }
 
 }
