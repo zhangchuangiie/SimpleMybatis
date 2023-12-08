@@ -49,7 +49,6 @@ public class RequestValue {
         return Double.valueOf(this.request.getParameter(s));
     }
 
-
     public Object getObject(String s){
         Object o = this.request.getParameter(s);
         if(o==null) return null;
