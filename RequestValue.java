@@ -20,7 +20,6 @@ public class RequestValue {
         return pattern.matcher(str).matches();
     }
 
-
     public String getString(String s){
         if(this.request.getParameter(s)==null) return null;
         return this.request.getParameter(s);
